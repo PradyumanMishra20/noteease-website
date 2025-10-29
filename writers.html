@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteEase - Writers</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>NoteEase – Effortless Notes for Every Student</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h2>Meet Our Expert Writers</h2>
+    <p>Verified freelancers ready to deliver high-quality notes on your topics.</p>
+  </div>
+</section>
+
+<section class="writer-profiles">
+  <div class="container">
+    <div class="writer" data-aos="fade-up">
+      <i class="fas fa-user-graduate"></i>
+      <h3>John Doe</h3>
+      <p>Math & Science</p>
+    </div>
+    <div class="writer" data-aos="fade-up" data-aos-delay="100">
+      <i class="fas fa-user-graduate"></i>
+      <h3>Jane Smith</h3>
+      <p>English & Literature</p>
+    </div>
+    <div class="writer" data-aos="fade-up" data-aos-delay="200">
+      <i class="fas fa-user-graduate"></i>
+      <h3>Robert Lee</h3>
+      <p>History & Civics</p>
+    </div>
+    <div class="writer" data-aos="fade-up" data-aos-delay="300">
+      <i class="fas fa-user-graduate"></i>
+      <h3>Emily Clark</h3>
+      <p>Biology & Chemistry</p>
+    </div>
+  </div>
+</section>
+
+<section class="writer-apply-section">
+  <h2>Become a Writer</h2>
+  <p class="writer-desc">Fill out the form below to apply as a writer for NoteEase. We’ll review your details and contact you soon!</p>
+
+  <form class="writer-form" id="writerForm" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="writerName">Full Name</label>
+    <input type="text" id="writerName" name="name" placeholder="Enter your full name" required>
+  </div>
+
+  <div class="form-group">
+    <label for="writerEmail">Email Address</label>
+    <input type="email" id="writerEmail" name="email" placeholder="Enter your email" required>
+  </div>
+
+  <div class="form-group">
+    <label for="writerPhone">Phone Number</label>
+    <input type="tel" id="writerPhone" name="phone" placeholder="Enter your phone number" required>
+  </div>
+
+  <div class="form-group">
+    <label for="writerEducation">Education / School / College</label>
+    <input type="text" id="writerEducation" name="education" placeholder="Enter your current institution" required>
+  </div>
+
+  <div class="form-group">
+    <label for="writingSample">Upload Writing Sample (Optional)</label>
+    <input type="file" id="writingSample" name="writing_sample" accept=".pdf,.doc,.docx,.txt">
+  </div>
+
+  <div class="form-group">
+    <label for="writerMotivation">Why do you want to become a writer?</label>
+    <textarea id="writerMotivation" name="motivation" rows="4" placeholder="Write a few lines about your motivation..." required></textarea>
+  </div>
+
+  <button type="submit" class="writer-btn">Submit Application</button>
+</form>
+
+<p id="writerFormConfirm" class="success-msg" style="display:none;">Application submitted successfully!</p>
+
+</section>
+
+
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-flex">
+    <p>&copy; 2025 NoteEase. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  AOS.init({ duration:1000, once:true });
+</script>
+<div class="social-floating">
+<a href="https://wa.me/918454894108" target="_blank" class="float-btn">
+  <i class="fab fa-whatsapp"></i>
+</a>
+</div>
+<script src="form-handler.js" defer></script>
+
+</body>
+</html>

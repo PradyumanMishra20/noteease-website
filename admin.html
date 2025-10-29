@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f7f9fc; }
+    h1 { text-align: center; color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background: #007bff; color: white; }
+    tr:nth-child(even) { background: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>📊 Admin Dashboard</h1>
+  <div id="dataContainer">Loading data...</div>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("http://localhost:3000/admin/data");
+      const result = await res.json();
+
+      if (!result.success) {
+        document.getElementById("dataContainer").textContent = "Failed to load data.";
+        return;
+      }
+
+      let html = "";
+
+      for (const [key, list] of Object.entries(result)) {
+        if (key === "success") continue;
+        html += `<h2>${key.toUpperCase()}</h2>`;
+        if (list.length === 0) {
+          html += "<p>No records found.</p>";
+          continue;
+        }
+        html += `<table><tr>${Object.keys(list[0])
+          .map(col => `<th>${col}</th>`)
+          .join("")}</tr>`;
+        list.forEach(row => {
+          html += `<tr>${Object.values(row)
+            .map(val => `<td>${val}</td>`)
+            .join("")}</tr>`;
+        });
+        html += "</table><br><br>";
+      }
+
+      document.getElementById("dataContainer").innerHTML = html;
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
