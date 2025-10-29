@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(result.message || "Form submitted successfully!");
       form.reset();
 
+      // Show confirmation if present
       const confirmMsg = form.nextElementSibling;
       if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
         confirmMsg.style.display = "block";
@@ -45,32 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (err) {
       console.error("❌ Form submission error:", err);
-      alert("Server error while submitting the form!");
-    }
-  }
-
-  // ---------------------------
-  // Helper for FILE upload form
-  // ---------------------------
-  async function submitFileForm(event, endpoint) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-
-    console.log("📎 Sending file form data...");
-
-    try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-      console.log("✅ Server Response:", result);
-      alert(result.message || "Form submitted successfully!");
-      form.reset();
-    } catch (err) {
-      console.error("❌ File form submission error:", err);
       alert("Server error while submitting the form!");
     }
   }
@@ -93,11 +68,17 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ contactForm active");
   }
 
-  // ✅ Writer Application Form (file upload)
+  // ✅ Writer Application Form
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
-      submitFileForm(e, `${BASE_URL}/api/writer`)
+      submitForm(e, `${BASE_URL}/api/writer-application`, {
+        name: "writerName",
+        email: "writerEmail",
+        experience: "writerExperience",
+        subject: "writerSubject",
+        sample_link: "writerSample",
+      })
     );
     console.log("✅ writerForm active");
   }
@@ -106,11 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/request`, {
+      submitForm(e, `${BASE_URL}/api/generic-request`, {
         name: "requestName",
-        phone: "requestPhone",
-        address: "requestAddress",
-        message: "requestMessage",
+        email: "requestEmail",
+        topic: "requestTopic",
+        description: "requestDescription",
       })
     );
     console.log("✅ requestForm active");
