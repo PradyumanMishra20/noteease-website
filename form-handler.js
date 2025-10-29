@@ -3,13 +3,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📡 form-handler.js loaded and active!");
 
-  // Helper function for JSON form submission
+  // ---------------------------
+  // Helper for JSON form submit
+  // ---------------------------
   async function submitForm(event, endpoint, fieldIds) {
     event.preventDefault();
 
     const form = event.target;
     const data = {};
 
+    // Collect all values
     for (const [key, id] of Object.entries(fieldIds)) {
       const el = document.getElementById(id);
       if (!el) {
@@ -46,7 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Helper for FILE upload form (writer)
+  // ---------------------------
+  // Helper for FILE upload form
+  // ---------------------------
   async function submitFileForm(event, endpoint) {
     event.preventDefault();
     const form = event.target;
@@ -70,7 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🚀 Replace this with your deployed backend URL
+  // ---------------------------
+  // Base URL (your Railway backend)
+  // ---------------------------
   const BASE_URL = "https://noteease.up.railway.app";
 
   // ✅ Contact Form
@@ -86,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ contactForm active");
   }
 
-  // ✅ Writer Form (uses file upload)
+  // ✅ Writer Application Form (file upload)
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
@@ -95,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ writerForm active");
   }
 
-  // ✅ Request Form (corrected endpoint)
+  // ✅ Generic Request Form
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
