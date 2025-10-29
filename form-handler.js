@@ -3,14 +3,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📡 form-handler.js loaded and active!");
 
-  // Helper function for form submission
+  // Helper function for JSON form submission
   async function submitForm(event, endpoint, fieldIds) {
     event.preventDefault();
 
     const form = event.target;
     const data = {};
 
-    // Collect field values
     for (const [key, id] of Object.entries(fieldIds)) {
       const el = document.getElementById(id);
       if (!el) {
@@ -36,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(result.message || "Form submitted successfully!");
       form.reset();
 
-      // Show success message
       const confirmMsg = form.nextElementSibling;
       if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
         confirmMsg.style.display = "block";
@@ -48,7 +46,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🚀 Change this to your live backend URL (from Railway)
+  // Helper for FILE upload form (writer)
+  async function submitFileForm(event, endpoint) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    console.log("📎 Sending file form data...");
+
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      console.log("✅ Server Response:", result);
+      alert(result.message || "Form submitted successfully!");
+      form.reset();
+    } catch (err) {
+      console.error("❌ File form submission error:", err);
+      alert("Server error while submitting the form!");
+    }
+  }
+
+  // 🚀 Replace this with your deployed backend URL
   const BASE_URL = "https://noteease.up.railway.app";
 
   // ✅ Contact Form
@@ -64,25 +86,20 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ contactForm active");
   }
 
-  // ✅ Writer Form
+  // ✅ Writer Form (uses file upload)
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/writer`, {
-        name: "writerName",
-        email: "writerEmail",
-        qualification: "writerEducation",
-        experience: "writerMotivation",
-      })
+      submitFileForm(e, `${BASE_URL}/api/writer`)
     );
     console.log("✅ writerForm active");
   }
 
-  // ✅ Request Form (updated for your current fields)
+  // ✅ Request Form (corrected endpoint)
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/order`, {
+      submitForm(e, `${BASE_URL}/api/request`, {
         name: "requestName",
         phone: "requestPhone",
         address: "requestAddress",
