@@ -13,7 +13,7 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // -------------------------
 // Setup
@@ -48,8 +48,10 @@ const upload = multer({ storage });
 let db;
 const initDB = async () => {
   try {
-    const connectionURL = process.env.DATABASE_URL;
-    db = await mysql.createPool(connectionURL + "?ssl={" + JSON.stringify({ rejectUnauthorized: true }) + "}");
+    db = await mysql.createPool({
+      uri: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    });
     console.log("✅ MySQL connected successfully!");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err);
@@ -95,7 +97,9 @@ app.post("/api/order", upload.single("file"), async (req, res) => {
     const file = req.file ? req.file.filename : null;
 
     if (!name || !email || !topic) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
     }
 
     await db.query(
@@ -123,10 +127,15 @@ app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
     if (!name || !email || !message) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
     }
 
-    await db.query("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)", [name, email, message]);
+    await db.query(
+      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
+      [name, email, message]
+    );
 
     await sendEmail(
       "📩 New Contact Message",
@@ -150,7 +159,9 @@ app.post("/api/writer", upload.single("resume"), async (req, res) => {
     const resume = req.file ? req.file.filename : null;
 
     if (!name || !email || !qualification) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
     }
 
     await db.query(
@@ -169,6 +180,13 @@ app.post("/api/writer", upload.single("resume"), async (req, res) => {
     console.error("❌ Writer error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
+});
+
+// -------------------------
+// Default Route
+// -------------------------
+app.get("/", (req, res) => {
+  res.send("🚀 NoteEase Backend is running successfully on Railway!");
 });
 
 // -------------------------
