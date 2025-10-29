@@ -1,4 +1,6 @@
-// ✅ server.js — NoteEase Backend API with Email Notifications
+// -------------------------
+// server.js — NoteEase Backend (Railway Ready)
+// -------------------------
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -22,48 +24,32 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-// ✅ Ensure uploads folder exists
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // -------------------------
-// Multer Setup
+// File Upload Setup
 // -------------------------
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "uploads");
+    if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
+    cb(null, uploadPath);
+  },
   filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueName + path.extname(file.originalname));
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
-  fileFilter: (req, file, cb) => {
-    const allowed = /pdf|doc|docx|txt/;
-    const ext = path.extname(file.originalname).toLowerCase();
-    allowed.test(ext) ? cb(null, true) : cb(new Error("Invalid file type"));
-  },
-});
+const upload = multer({ storage });
 
 // -------------------------
-// MySQL Connection
+// MySQL Connection (Railway)
 // -------------------------
 let db;
 const initDB = async () => {
   try {
-    db = await mysql.createPool({
-      host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASS || "",
-      database: process.env.DB_NAME || "noteease",
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+    const connectionURL = process.env.DATABASE_URL;
+    db = await mysql.createPool(connectionURL + "?ssl={" + JSON.stringify({ rejectUnauthorized: true }) + "}");
     console.log("✅ MySQL connected successfully!");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err);
@@ -72,7 +58,7 @@ const initDB = async () => {
 initDB();
 
 // -------------------------
-// Nodemailer Setup
+// Email Setup
 // -------------------------
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -82,143 +68,111 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Utility to send notification email
-const sendNotification = async (subject, htmlContent) => {
+// -------------------------
+// Helper: Send Email
+// -------------------------
+async function sendEmail(subject, text, html) {
   try {
     await transporter.sendMail({
-      from: `"NoteEase Notifications" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // send to your own mail
+      from: `"NoteEase" <${process.env.EMAIL_USER}>`,
+      to: process.env.ADMIN_EMAIL,
       subject,
-      html: htmlContent,
+      text,
+      html,
     });
-    console.log(`📩 Email sent: ${subject}`);
+    console.log("📩 Email sent successfully!");
   } catch (err) {
     console.error("❌ Email send error:", err);
   }
-};
+}
 
 // -------------------------
-// ROUTES
+// API: Order Form
 // -------------------------
-
-// ✅ Contact Form
-app.post("/contact", async (req, res) => {
-  try {
-    const { name, email, message } = req.body;
-    if (!name || !email || !message)
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required!" });
-
-    await db.query(
-      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
-      [name, email, message]
-    );
-
-    await sendNotification(
-      "📬 New Contact Message",
-      `<h3>New message from ${name}</h3>
-       <p><b>Email:</b> ${email}</p>
-       <p><b>Message:</b> ${message}</p>`
-    );
-
-    res.json({ success: true, message: "Message submitted successfully!" });
-  } catch (err) {
-    console.error("❌ Contact error:", err);
-    res.status(500).json({ success: false, error: "Server error." });
-  }
-});
-
-// ✅ Writer Form
-app.post("/writer", upload.single("writing_sample"), async (req, res) => {
-  try {
-    const { name, email, phone, education, motivation } = req.body;
-    const writing_sample = req.file ? req.file.filename : "No file uploaded";
-
-    await db.query(
-      "INSERT INTO writer_applications (name, email, phone, education, writing_sample, motivation) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, email, phone, education, writing_sample, motivation || ""]
-    );
-
-    await sendNotification(
-      "📝 New Writer Application",
-      `<h3>Writer: ${name}</h3>
-       <p><b>Email:</b> ${email}</p>
-       <p><b>Phone:</b> ${phone}</p>
-       <p><b>Education:</b> ${education}</p>
-       <p><b>Motivation:</b> ${motivation}</p>
-       <p><b>Sample File:</b> ${writing_sample}</p>`
-    );
-
-    res.json({ success: true, message: "Application submitted successfully!" });
-  } catch (err) {
-    console.error("❌ Writer error:", err);
-    res.status(500).json({ success: false, error: "Server error." });
-  }
-});
-
-// ✅ Order Form
-app.post("/order", async (req, res) => {
+app.post("/api/order", upload.single("file"), async (req, res) => {
   try {
     const { name, email, topic, pages, budget, instructions } = req.body;
-    if (!name || !email || !topic || !pages || !budget)
-      return res
-        .status(400)
-        .json({ success: false, message: "Please fill all required fields!" });
+    const file = req.file ? req.file.filename : null;
+
+    if (!name || !email || !topic) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
 
     await db.query(
-      "INSERT INTO orders (name, email, topic, pages, budget, instructions) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, email, topic, pages, budget, instructions || ""]
+      "INSERT INTO orders (name, email, topic, pages, budget, instructions, file) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, email, topic, pages || 0, budget || 0, instructions || "", file]
     );
 
-    await sendNotification(
-      "🛒 New Order Received",
-      `<h3>Order from ${name}</h3>
-       <p><b>Email:</b> ${email}</p>
-       <p><b>Topic:</b> ${topic}</p>
-       <p><b>Pages:</b> ${pages}</p>
-       <p><b>Budget:</b> ₹${budget}</p>
-       <p><b>Instructions:</b> ${instructions || "None"}</p>`
+    await sendEmail(
+      "🧾 New NoteEase Order",
+      `New order from ${name} (${email})\nTopic: ${topic}`,
+      `<b>New Order:</b><br>Name: ${name}<br>Email: ${email}<br>Topic: ${topic}<br>Pages: ${pages}<br>Budget: ${budget}`
     );
 
     res.json({ success: true, message: "Order submitted successfully!" });
   } catch (err) {
     console.error("❌ Order error:", err);
-    res.status(500).json({ success: false, error: "Server error." });
-  }
-});
-
-// ✅ Request Form
-app.post("/request", async (req, res) => {
-  try {
-    const { name, phone, address, message } = req.body;
-    if (!name || !phone || !address || !message)
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required!" });
-
-    await db.query(
-      "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
-      [name, phone, address, message]
-    );
-
-    await sendNotification(
-      "📦 New Request Form",
-      `<h3>Request from ${name}</h3>
-       <p><b>Phone:</b> ${phone}</p>
-       <p><b>Address:</b> ${address}</p>
-       <p><b>Message:</b> ${message}</p>`
-    );
-
-    res.json({ success: true, message: "Request submitted successfully!" });
-  } catch (err) {
-    console.error("❌ Request error:", err);
-    res.status(500).json({ success: false, error: "Server error." });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
 // -------------------------
-// Start Server
+// API: Contact Form
+// -------------------------
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    await db.query("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)", [name, email, message]);
+
+    await sendEmail(
+      "📩 New Contact Message",
+      `From: ${name} (${email})\nMessage: ${message}`,
+      `<b>From:</b> ${name} (${email})<br><b>Message:</b> ${message}`
+    );
+
+    res.json({ success: true, message: "Message sent successfully!" });
+  } catch (err) {
+    console.error("❌ Contact error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// -------------------------
+// API: Writer Form
+// -------------------------
+app.post("/api/writer", upload.single("resume"), async (req, res) => {
+  try {
+    const { name, email, qualification, experience } = req.body;
+    const resume = req.file ? req.file.filename : null;
+
+    if (!name || !email || !qualification) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    await db.query(
+      "INSERT INTO writers (name, email, qualification, experience, resume) VALUES (?, ?, ?, ?, ?)",
+      [name, email, qualification, experience || "", resume]
+    );
+
+    await sendEmail(
+      "✍️ New Writer Application",
+      `New writer: ${name} (${email})`,
+      `<b>Name:</b> ${name}<br><b>Email:</b> ${email}<br><b>Qualification:</b> ${qualification}`
+    );
+
+    res.json({ success: true, message: "Application submitted successfully!" });
+  } catch (err) {
+    console.error("❌ Writer error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// -------------------------
+// Server Start
 // -------------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
