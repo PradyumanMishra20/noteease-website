@@ -1,4 +1,4 @@
-// ✅ NoteEase Backend - Final Production Version (For Railway)
+// ✅ NoteEase Backend - Clean Production Version (For Railway)
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,33 +11,37 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// --- Express setup
+// -------------------------
+// ✅ CORS Setup (Frontend URL)
+// -------------------------
 app.use(
   cors({
-    origin: ["https://pradyumanmishra20.github.io"], // ✅ Your frontend
+    origin: ["https://pradyumanmishra20.github.io"], // your frontend site
     methods: ["POST", "GET"],
     allowedHeaders: ["Content-Type"],
   })
 );
 app.use(express.json());
 
-// --- Paths
+// -------------------------
+// ✅ Static Files (optional)
+// -------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
 
 // -------------------------
-// ✅ MySQL init (fixed for Railway)
+// ✅ MySQL Connection (using .env vars)
 // -------------------------
 let db;
 const initDB = async () => {
   try {
     db = await mysql.createConnection({
-      host: "trolley.proxy.rlwy.net",
-      port: 14143,
-      user: "root",
-      password: "DiBCrmcEHvQvrUipelILmekKIgnXorlb",
-      database: "railway",
+      host: process.env.MYSQLHOST,
+      port: process.env.MYSQLPORT,
+      user: process.env.MYSQLUSER,
+      password: process.env.MYSQLPASSWORD,
+      database: process.env.MYSQLDATABASE,
       ssl: { rejectUnauthorized: false },
     });
     console.log("✅ MySQL connected successfully!");
@@ -48,7 +52,7 @@ const initDB = async () => {
 await initDB();
 
 // -------------------------
-// ✅ Email Setup
+// ✅ Email Setup (Nodemailer)
 // -------------------------
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -176,7 +180,7 @@ app.post("/api/admin-login", (req, res) => {
 });
 
 // -------------------------
-// ✅ Server Start
+// ✅ Start Server
 // -------------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
