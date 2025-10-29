@@ -1,90 +1,63 @@
-// server.js — NoteEase (railway-ready, CORS + multer + mysql)
+// -------------------------
+// Import dependencies
+// -------------------------
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
 import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
+import path from "path";
 import { fileURLToPath } from "url";
 
+// -------------------------
+// Config
+// -------------------------
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CORS (explicit)
-const allowedOrigins = [
-  "https://pradyumanmishra20.github.io",
-  "http://localhost:3000",
-];
+// -------------------------
+// Middleware setup
+// -------------------------
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ✅ Fixed CORS configuration
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true,
+    origin: [
+      "https://pradyumanmishra20.github.io", // GitHub Pages frontend
+      "http://localhost:3000",               // Local testing
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// simple request logger
-app.use((req, res, next) => {
-  console.log(new Date().toISOString(), req.method, req.url);
-  next();
-});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// --- multer (file uploads)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "uploads");
-    if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
-
-// --- MySQL init
+// -------------------------
+// Database Connection
+// -------------------------
 let db;
-const initDB = async () => {
+(async () => {
   try {
-    if (process.env.DATABASE_URL) {
-      // parse DATABASE_URL or let mysql2 accept it
-      db = await mysql.createPool({
-        uri: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-        waitForConnections: true,
-        connectionLimit: 10,
-      });
-    } else {
-      db = await mysql.createPool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
-        waitForConnections: true,
-        connectionLimit: 10,
-      });
-    }
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+    });
     console.log("✅ MySQL connected successfully!");
   } catch (err) {
-    console.error("❌ MySQL connection failed:", err);
+    console.error("❌ Database connection error:", err);
   }
-};
-initDB();
+})();
 
-// --- Mailer
+// -------------------------
+// Nodemailer setup
+// -------------------------
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -93,96 +66,80 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendEmail(subject, text, html) {
+// -------------------------
+// Routes
+// -------------------------
+
+// 🧾 Writer Application Form
+app.post("/api/writer-application", async (req, res) => {
   try {
+    const { name, email, experience, sample_link } = req.body;
+
+    if (!name || !email || !experience) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const query = `
+      INSERT INTO writer_applications (name, email, experience, sample_link)
+      VALUES (?, ?, ?, ?)
+    `;
+    await db.execute(query, [name, email, experience, sample_link || ""]);
+
+    // Send email to admin
     await transporter.sendMail({
-      from: `"NoteEase" <${process.env.EMAIL_USER}>`,
+      from: process.env.EMAIL_USER,
       to: process.env.ADMIN_EMAIL,
-      subject,
-      text,
-      html,
+      subject: "New Writer Application – NoteEase",
+      text: `Name: ${name}\nEmail: ${email}\nExperience: ${experience}\nSample: ${sample_link || "N/A"}`,
     });
-    console.log("📩 Email sent:", subject);
+
+    res.status(200).json({ message: "Writer application submitted successfully" });
   } catch (err) {
-    console.error("❌ Email error:", err);
-  }
-}
-
-// --- Contact
-app.post("/api/contact", async (req, res) => {
-  try {
-    const { name, email, message } = req.body;
-    if (!name || !email || !message)
-      return res.status(400).json({ success: false, message: "Missing fields" });
-
-    await db.query(
-      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
-      [name, email, message]
-    );
-
-    await sendEmail(
-      "📩 New Contact Message",
-      `From: ${name} (${email})\n${message}`,
-      `<b>From:</b> ${name} (${email})<br/><b>Message:</b><br/>${message}`
-    );
-
-    res.json({ success: true, message: "Message saved" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("❌ Error submitting writer application:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-// --- Writer (multipart/form-data expected)
-app.post("/api/writer", upload.single("resume"), async (req, res) => {
+// 💬 Generic Requests Form
+app.post("/api/generic-request", async (req, res) => {
   try {
-    const { name, email, qualification, experience } = req.body;
-    const resume = req.file ? req.file.filename : null;
-    if (!name || !email || !qualification)
-      return res.status(400).json({ success: false, message: "Missing fields" });
+    const { name, email, topic, message } = req.body;
 
-    await db.query(
-      "INSERT INTO writer_applications (name, email, qualification, experience, resume) VALUES (?, ?, ?, ?, ?)",
-      [name, email, qualification, experience || "", resume]
-    );
+    if (!name || !email || !topic || !message) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
-    await sendEmail(
-      "✍️ New Writer Application",
-      `Name: ${name}\nEmail: ${email}\nQualification: ${qualification}`,
-      `<b>Name:</b> ${name}<br/><b>Email:</b> ${email}<br/><b>Qualification:</b> ${qualification}`
-    );
+    const query = `
+      INSERT INTO generic_requests (name, email, topic, message)
+      VALUES (?, ?, ?, ?)
+    `;
+    await db.execute(query, [name, email, topic, message]);
 
-    res.json({ success: true, message: "Application saved" });
+    // Send email to admin
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL,
+      subject: "New Generic Request – NoteEase",
+      text: `Name: ${name}\nEmail: ${email}\nTopic: ${topic}\nMessage: ${message}`,
+    });
+
+    res.status(200).json({ message: "Request submitted successfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("❌ Error submitting request:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-// --- Generic Request
-app.post("/api/request", async (req, res) => {
-  try {
-    const { name, phone, address, message } = req.body;
-    if (!name || !phone || !address)
-      return res.status(400).json({ success: false, message: "Missing fields" });
-
-    await db.query(
-      "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
-      [name, phone, address, message || ""]
-    );
-
-    await sendEmail(
-      "📦 New Generic Request",
-      `Name: ${name}\nPhone: ${phone}\nAddress: ${address}`,
-      `<b>Name:</b> ${name}<br/><b>Phone:</b> ${phone}<br/><b>Address:</b> ${address}<br/><b>Message:</b>${message}`
-    );
-
-    res.json({ success: true, message: "Request saved" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+// -------------------------
+// Default Route
+// -------------------------
+app.get("/", (req, res) => {
+  res.send("🚀 NoteEase backend is running!");
 });
 
-app.get("/", (req, res) => res.send("🚀 NoteEase backend running"));
-app.listen(PORT, () => console.log(`Server on ${PORT}`));
+// -------------------------
+// Start Server
+// -------------------------
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
