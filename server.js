@@ -89,38 +89,6 @@ async function sendEmail(subject, text, html) {
 }
 
 // -------------------------
-// API: Order Form
-// -------------------------
-app.post("/api/order", upload.single("file"), async (req, res) => {
-  try {
-    const { name, email, topic, pages, budget, instructions } = req.body;
-    const file = req.file ? req.file.filename : null;
-
-    if (!name || !email || !topic) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
-
-    await db.query(
-      "INSERT INTO orders (name, email, topic, pages, budget, instructions, file) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, email, topic, pages || 0, budget || 0, instructions || "", file]
-    );
-
-    await sendEmail(
-      "🧾 New NoteEase Order",
-      `New order from ${name} (${email})\nTopic: ${topic}`,
-      `<b>New Order:</b><br>Name: ${name}<br>Email: ${email}<br>Topic: ${topic}<br>Pages: ${pages}<br>Budget: ${budget}`
-    );
-
-    res.json({ success: true, message: "Order submitted successfully!" });
-  } catch (err) {
-    console.error("❌ Order error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
-// -------------------------
 // API: Contact Form
 // -------------------------
 app.post("/api/contact", async (req, res) => {
@@ -151,7 +119,7 @@ app.post("/api/contact", async (req, res) => {
 });
 
 // -------------------------
-// API: Writer Form
+// API: Writer Application Form
 // -------------------------
 app.post("/api/writer", upload.single("resume"), async (req, res) => {
   try {
@@ -165,7 +133,7 @@ app.post("/api/writer", upload.single("resume"), async (req, res) => {
     }
 
     await db.query(
-      "INSERT INTO writers (name, email, qualification, experience, resume) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO writer_applications (name, email, qualification, experience, resume) VALUES (?, ?, ?, ?, ?)",
       [name, email, qualification, experience || "", resume]
     );
 
@@ -178,6 +146,37 @@ app.post("/api/writer", upload.single("resume"), async (req, res) => {
     res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
     console.error("❌ Writer error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// -------------------------
+// API: Generic Request Form
+// -------------------------
+app.post("/api/request", async (req, res) => {
+  try {
+    const { name, phone, address, message } = req.body;
+
+    if (!name || !phone || !address) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    await db.query(
+      "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
+      [name, phone, address, message || ""]
+    );
+
+    await sendEmail(
+      "📦 New NoteEase Request",
+      `New request from ${name} (${phone})`,
+      `<b>Name:</b> ${name}<br><b>Phone:</b> ${phone}<br><b>Address:</b> ${address}<br><b>Message:</b> ${message}`
+    );
+
+    res.json({ success: true, message: "Request submitted successfully!" });
+  } catch (err) {
+    console.error("❌ Request error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
