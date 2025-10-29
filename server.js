@@ -1,6 +1,4 @@
-// -------------------------
-// server.js — NoteEase Backend (Railway Ready)
-// -------------------------
+// server.js — NoteEase (railway-ready, CORS + multer + mysql)
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -15,20 +13,34 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// -------------------------
-// Setup
-// -------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors());
+// --- CORS (explicit)
+const allowedOrigins = [
+  "https://pradyumanmishra20.github.io",
+  "http://localhost:3000",
+];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  })
+);
+
+// simple request logger
+app.use((req, res, next) => {
+  console.log(new Date().toISOString(), req.method, req.url);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// -------------------------
-// File Upload Setup
-// -------------------------
+// --- multer (file uploads)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, "uploads");
@@ -42,16 +54,29 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// -------------------------
-// MySQL Connection (Railway)
-// -------------------------
+// --- MySQL init
 let db;
 const initDB = async () => {
   try {
-    db = await mysql.createPool({
-      uri: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    });
+    if (process.env.DATABASE_URL) {
+      // parse DATABASE_URL or let mysql2 accept it
+      db = await mysql.createPool({
+        uri: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+        waitForConnections: true,
+        connectionLimit: 10,
+      });
+    } else {
+      db = await mysql.createPool({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: process.env.DB_NAME,
+        port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+        waitForConnections: true,
+        connectionLimit: 10,
+      });
+    }
     console.log("✅ MySQL connected successfully!");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err);
@@ -59,9 +84,7 @@ const initDB = async () => {
 };
 initDB();
 
-// -------------------------
-// Email Setup
-// -------------------------
+// --- Mailer
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -70,9 +93,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// -------------------------
-// Helper: Send Email
-// -------------------------
 async function sendEmail(subject, text, html) {
   try {
     await transporter.sendMail({
@@ -82,23 +102,18 @@ async function sendEmail(subject, text, html) {
       text,
       html,
     });
-    console.log("📩 Email sent successfully!");
+    console.log("📩 Email sent:", subject);
   } catch (err) {
-    console.error("❌ Email send error:", err);
+    console.error("❌ Email error:", err);
   }
 }
 
-// -------------------------
-// API: Contact Form
-// -------------------------
+// --- Contact
 app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
-    if (!name || !email || !message) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
+    if (!name || !email || !message)
+      return res.status(400).json({ success: false, message: "Missing fields" });
 
     await db.query(
       "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
@@ -107,30 +122,24 @@ app.post("/api/contact", async (req, res) => {
 
     await sendEmail(
       "📩 New Contact Message",
-      `From: ${name} (${email})\nMessage: ${message}`,
-      `<b>From:</b> ${name} (${email})<br><b>Message:</b> ${message}`
+      `From: ${name} (${email})\n${message}`,
+      `<b>From:</b> ${name} (${email})<br/><b>Message:</b><br/>${message}`
     );
 
-    res.json({ success: true, message: "Message sent successfully!" });
+    res.json({ success: true, message: "Message saved" });
   } catch (err) {
-    console.error("❌ Contact error:", err);
+    console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// -------------------------
-// API: Writer Application Form
-// -------------------------
+// --- Writer (multipart/form-data expected)
 app.post("/api/writer", upload.single("resume"), async (req, res) => {
   try {
     const { name, email, qualification, experience } = req.body;
     const resume = req.file ? req.file.filename : null;
-
-    if (!name || !email || !qualification) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
+    if (!name || !email || !qualification)
+      return res.status(400).json({ success: false, message: "Missing fields" });
 
     await db.query(
       "INSERT INTO writer_applications (name, email, qualification, experience, resume) VALUES (?, ?, ?, ?, ?)",
@@ -139,29 +148,23 @@ app.post("/api/writer", upload.single("resume"), async (req, res) => {
 
     await sendEmail(
       "✍️ New Writer Application",
-      `New writer: ${name} (${email})`,
-      `<b>Name:</b> ${name}<br><b>Email:</b> ${email}<br><b>Qualification:</b> ${qualification}`
+      `Name: ${name}\nEmail: ${email}\nQualification: ${qualification}`,
+      `<b>Name:</b> ${name}<br/><b>Email:</b> ${email}<br/><b>Qualification:</b> ${qualification}`
     );
 
-    res.json({ success: true, message: "Application submitted successfully!" });
+    res.json({ success: true, message: "Application saved" });
   } catch (err) {
-    console.error("❌ Writer error:", err);
+    console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// -------------------------
-// API: Generic Request Form
-// -------------------------
+// --- Generic Request
 app.post("/api/request", async (req, res) => {
   try {
     const { name, phone, address, message } = req.body;
-
-    if (!name || !phone || !address) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
+    if (!name || !phone || !address)
+      return res.status(400).json({ success: false, message: "Missing fields" });
 
     await db.query(
       "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
@@ -169,28 +172,17 @@ app.post("/api/request", async (req, res) => {
     );
 
     await sendEmail(
-      "📦 New NoteEase Request",
-      `New request from ${name} (${phone})`,
-      `<b>Name:</b> ${name}<br><b>Phone:</b> ${phone}<br><b>Address:</b> ${address}<br><b>Message:</b> ${message}`
+      "📦 New Generic Request",
+      `Name: ${name}\nPhone: ${phone}\nAddress: ${address}`,
+      `<b>Name:</b> ${name}<br/><b>Phone:</b> ${phone}<br/><b>Address:</b> ${address}<br/><b>Message:</b>${message}`
     );
 
-    res.json({ success: true, message: "Request submitted successfully!" });
+    res.json({ success: true, message: "Request saved" });
   } catch (err) {
-    console.error("❌ Request error:", err);
+    console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// -------------------------
-// Default Route
-// -------------------------
-app.get("/", (req, res) => {
-  res.send("🚀 NoteEase Backend is running successfully on Railway!");
-});
-
-// -------------------------
-// Server Start
-// -------------------------
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+app.get("/", (req, res) => res.send("🚀 NoteEase backend running"));
+app.listen(PORT, () => console.log(`Server on ${PORT}`));
