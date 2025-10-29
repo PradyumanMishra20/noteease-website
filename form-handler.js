@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🚀 Change this base URL to your Railway backend URL
-  const BASE_URL = "https://your-app-name.up.railway.app";
+  // 🚀 Change this to your live backend URL (from Railway)
+  const BASE_URL = "https://noteease.up.railway.app";
 
   // ✅ Contact Form
   const contactForm = document.getElementById("contactForm");
@@ -78,20 +78,17 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ writerForm active");
   }
 
-  // ✅ Order Form
-  const orderForm = document.getElementById("requestForm");
-  if (orderForm) {
-    orderForm.addEventListener("submit", (e) =>
+  // ✅ Request Form (updated for your current fields)
+  const requestForm = document.getElementById("requestForm");
+  if (requestForm) {
+    requestForm.addEventListener("submit", (e) =>
       submitForm(e, `${BASE_URL}/api/order`, {
         name: "requestName",
-        email: "requestEmail",
-        topic: "requestTopic",
-        pages: "requestPages",
-        budget: "requestBudget",
-        instructions: "requestMessage",
+        phone: "requestPhone",
+        address: "requestAddress",
+        message: "requestMessage",
       })
     );
     console.log("✅ requestForm active");
   }
 });
-
