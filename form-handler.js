@@ -46,13 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("❌ Form submission error:", err);
       alert("Server error while submitting the form!");
     }
-  } // ✅ ← this was missing
+  }
+
+  // 🚀 Change this base URL to your Railway backend URL
+  const BASE_URL = "https://your-app-name.up.railway.app";
 
   // ✅ Contact Form
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", (e) =>
-      submitForm(e, "http://localhost:3000/contact", {
+      submitForm(e, `${BASE_URL}/api/contact`, {
         name: "contactName",
         email: "contactEmail",
         message: "contactMessage",
@@ -65,28 +68,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
-      submitForm(e, "http://localhost:3000/writer", {
+      submitForm(e, `${BASE_URL}/api/writer`, {
         name: "writerName",
         email: "writerEmail",
-        phone: "writerPhone",
-        education: "writerEducation",
-        motivation: "writerMotivation",
+        qualification: "writerEducation",
+        experience: "writerMotivation",
       })
     );
     console.log("✅ writerForm active");
   }
 
-  // ✅ Request Form
-  const requestForm = document.getElementById("requestForm");
-  if (requestForm) {
-    requestForm.addEventListener("submit", (e) =>
-      submitForm(e, "http://localhost:3000/request", {
+  // ✅ Order Form
+  const orderForm = document.getElementById("requestForm");
+  if (orderForm) {
+    orderForm.addEventListener("submit", (e) =>
+      submitForm(e, `${BASE_URL}/api/order`, {
         name: "requestName",
-        phone: "requestPhone",
-        address: "requestAddress",
-        message: "requestMessage",
+        email: "requestEmail",
+        topic: "requestTopic",
+        pages: "requestPages",
+        budget: "requestBudget",
+        instructions: "requestMessage",
       })
     );
-    console.log("✅ requestForm active");
+    console.log("✅ orderForm active");
   }
-}); // ✅ ← this was also missing
+});
