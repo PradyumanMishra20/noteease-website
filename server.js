@@ -19,7 +19,7 @@ app.use(
     allowedHeaders: ["Content-Type"],
   })
 );
-app.options("*", cors()); // ✅ allow preflight for all routes
+app.options(/.*/, cors()); // ✅ allow preflight for all routes
 
 // Rest of your setup below
 app.use(express.json());
@@ -191,6 +191,7 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
 
