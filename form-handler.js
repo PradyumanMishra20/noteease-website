@@ -55,11 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------------------------
   const BASE_URL = "https://noteease.up.railway.app";
 
-  // ✅ Contact Form
+ // ✅ Contact Form
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/contact`, {
+      submitForm(e, "`${BASE_URL}/api/contact`", {
         name: "contactName",
         email: "contactEmail",
         message: "contactMessage",
@@ -68,32 +68,32 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ contactForm active");
   }
 
-  // ✅ Writer Application Form
+  // ✅ Writer Form
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/writer-application`, {
+      submitForm(e, "`${BASE_URL}/api/writer", {
         name: "writerName",
         email: "writerEmail",
-        experience: "writerExperience",
-        subject: "writerSubject",
-        sample_link: "writerSample",
+        phone: "writerPhone",
+        education: "writerEducation",
+        motivation: "writerMotivation",
       })
     );
     console.log("✅ writerForm active");
   }
 
-  // ✅ Generic Request Form
+  // ✅ Request Form
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/generic-request`, {
+      submitForm(e, "`${BASE_URL}/api/request`", {
         name: "requestName",
-        email: "requestEmail",
-        topic: "requestTopic",
-        description: "requestDescription",
+        phone: "requestPhone",
+        address: "requestAddress",
+        message: "requestMessage",
       })
     );
     console.log("✅ requestForm active");
   }
-});
+}); 
