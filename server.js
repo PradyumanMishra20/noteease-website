@@ -9,25 +9,19 @@ import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// -------------------------
-// Setup
-// -------------------------
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// ✅ CORS must come first
 app.use(
   cors({
-    origin: [
-      "https://pradyumanmishra20.github.io", // ✅ allow your frontend
-      "https://noteease.up.railway.app",     // ✅ allow Railway itself (for testing)
-    ],
-    methods: ["GET", "POST"],
+    origin: ["https://pradyumanmishra20.github.io", "https://noteease.up.railway.app"],
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
+app.options("*", cors()); // ✅ allow preflight for all routes
 
+// Rest of your setup below
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -197,5 +191,6 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
