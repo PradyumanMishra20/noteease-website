@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("📡 form-handler.js loaded and active!");
 
   // ---------------------------
-  // Helper for JSON form submit
+  // Helper function for JSON form submit
   // ---------------------------
   async function submitForm(event, endpoint, fieldIds) {
     event.preventDefault();
@@ -32,13 +32,23 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
+      // Check if response is valid JSON
+      const text = await res.text();
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        console.error("⚠️ Server did not return JSON. Response:", text);
+        alert("Unexpected server response!");
+        return;
+      }
+
       console.log("✅ Server Response:", result);
 
       alert(result.message || "Form submitted successfully!");
       form.reset();
 
-      // Show confirmation if present
+      // Optional confirmation message
       const confirmMsg = form.nextElementSibling;
       if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
         confirmMsg.style.display = "block";
@@ -51,15 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------
-  // Base URL (your Railway backend)
+  // Base URL (Railway backend)
   // ---------------------------
   const BASE_URL = "https://noteease.up.railway.app";
 
- // ✅ Contact Form
+  // ✅ Contact Form
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", (e) =>
-      submitForm(e, "`${BASE_URL}/api/contact`", {
+      submitForm(e, `${BASE_URL}/api/contact`, {
         name: "contactName",
         email: "contactEmail",
         message: "contactMessage",
@@ -72,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
-      submitForm(e, "`${BASE_URL}/api/writer", {
+      submitForm(e, `${BASE_URL}/api/writer`, {
         name: "writerName",
         email: "writerEmail",
         phone: "writerPhone",
@@ -87,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
-      submitForm(e, "`${BASE_URL}/api/request`", {
+      submitForm(e, `${BASE_URL}/api/request`, {
         name: "requestName",
         phone: "requestPhone",
         address: "requestAddress",
@@ -96,4 +106,4 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     console.log("✅ requestForm active");
   }
-}); 
+});
