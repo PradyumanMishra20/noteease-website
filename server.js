@@ -107,7 +107,7 @@ const sendNotification = async (subject, htmlContent) => {
 // -------------------------
 
 // Contact Form
-app.post(""/api/contact", async (req, res) => {
+app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
     if (!name || !email || !message)
@@ -193,3 +193,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
