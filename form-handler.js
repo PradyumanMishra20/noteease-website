@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("📡 form-handler.js loaded and active!");
 
   // ---------------------------
-  // Helper function for JSON form submit
+  // Helper for JSON form submit
   // ---------------------------
   async function submitForm(event, endpoint, fieldIds) {
     event.preventDefault();
@@ -32,23 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data),
       });
 
-      // Check if response is valid JSON
-      const text = await res.text();
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        console.error("⚠️ Server did not return JSON. Response:", text);
-        alert("Unexpected server response!");
-        return;
+      if (!res.ok) {
+        console.error("❌ HTTP error:", res.status, res.statusText);
+        throw new Error(`Server responded with status ${res.status}`);
       }
 
+      const result = await res.json();
       console.log("✅ Server Response:", result);
 
       alert(result.message || "Form submitted successfully!");
       form.reset();
 
-      // Optional confirmation message
+      // Optional confirmation message (if you added one in HTML)
       const confirmMsg = form.nextElementSibling;
       if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
         confirmMsg.style.display = "block";
@@ -61,11 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------
-  // Base URL (Railway backend)
+  // ✅ Base URL (your backend on Railway)
   // ---------------------------
   const BASE_URL = "https://noteease.up.railway.app";
 
+  // ---------------------------
   // ✅ Contact Form
+  // ---------------------------
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", (e) =>
@@ -78,7 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ contactForm active");
   }
 
+  // ---------------------------
   // ✅ Writer Form
+  // ---------------------------
   const writerForm = document.getElementById("writerForm");
   if (writerForm) {
     writerForm.addEventListener("submit", (e) =>
@@ -93,7 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ writerForm active");
   }
 
+  // ---------------------------
   // ✅ Request Form
+  // ---------------------------
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
     requestForm.addEventListener("submit", (e) =>
