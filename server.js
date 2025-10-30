@@ -1,4 +1,5 @@
 // ✅ server.js — NoteEase Backend API with Email Notifications
+// ✅ server.js — Fixed CORS for GitHub Pages + Railway
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -8,29 +9,32 @@ import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
-// ✅ Fix __dirname and __filename in ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// ✅ CORS (Fix for Railway + GitHub Pages)
+// ✅ Hardcore CORS fix (works even if Railway blocks preflight)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://pradyumanmishra20.github.io");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.status(200).end(); // respond to preflight immediately
   }
   next();
 });
 
-
-// Rest of your setup below
+// ✅ Basic setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+// ✅ Check if uploads folder exists
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 // ✅ Ensure uploads folder exists
 const uploadDir = path.join(__dirname, "uploads");
@@ -197,4 +201,5 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
