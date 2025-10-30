@@ -8,8 +8,12 @@ import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
+// ✅ Fix __dirname and __filename in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // ✅ CORS must come first
 app.use(
@@ -191,7 +195,3 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-
-
-
