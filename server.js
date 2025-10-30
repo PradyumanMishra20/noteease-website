@@ -15,15 +15,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-// ✅ CORS must come first
-app.use(
-  cors({
-    origin: ["https://pradyumanmishra20.github.io", "https://noteease.up.railway.app"],
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
-app.options(/.*/, cors()); // ✅ allow preflight for all routes
+// ✅ CORS (Fix for Railway + GitHub Pages)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://pradyumanmishra20.github.io");
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 
 // Rest of your setup below
 app.use(express.json());
@@ -195,3 +197,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
