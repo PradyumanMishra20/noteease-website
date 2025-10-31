@@ -11,13 +11,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// ✅ Allow your frontend domain (CORS)
+// ✅ CORS (this must be BEFORE any routes)
 app.use(
   cors({
-    origin: "https://pradyumanmishra20.github.io",
+    origin: ["https://pradyumanmishra20.github.io"], // your frontend
     methods: ["GET", "POST"],
+    credentials: false,
   })
 );
 
@@ -25,6 +26,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+// ✅ Quick Test Route (to verify deployment & CORS)
+app.get("/", (req, res) => {
+  res.send("🚀 Backend live & CORS active!");
+});
 
 // ✅ Ensure uploads folder exists
 const uploadDir = path.join(__dirname, "uploads");
@@ -43,7 +48,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /pdf|doc|docx|txt/;
     const ext = path.extname(file.originalname).toLowerCase();
@@ -80,17 +85,16 @@ initDB();
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "noteeaseofficial@gmail.com", // your Gmail
-    pass: "hxxf dmaj fcpm wvqr", // Gmail App Password
+    user: "noteeaseofficial@gmail.com",
+    pass: "hxxf dmaj fcpm wvqr", // app password
   },
 });
 
-// Utility to send notification email
 const sendNotification = async (subject, htmlContent) => {
   try {
     await transporter.sendMail({
       from: `"NoteEase Notifications" <noteeaseofficial@gmail.com>`,
-      to: "noteeaseofficial@gmail.com", // send to yourself
+      to: "noteeaseofficial@gmail.com",
       subject,
       html: htmlContent,
     });
@@ -111,10 +115,11 @@ app.post("/api/contact", async (req, res) => {
     if (!name || !email || !message)
       return res.status(400).json({ success: false, message: "All fields are required!" });
 
-    await db.query(
-      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
-      [name, email, message]
-    );
+    await db.query("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)", [
+      name,
+      email,
+      message,
+    ]);
 
     await sendNotification(
       "📬 New Contact Message",
@@ -186,13 +191,8 @@ app.post("/api/request", async (req, res) => {
 });
 
 // -------------------------
-// Start Server
+// ✅ Start Server
 // -------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
-
-
-
