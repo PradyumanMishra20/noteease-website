@@ -1,3 +1,4 @@
+// ✅ server.js — NoteEase Backend API (no .env needed)
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -7,29 +8,44 @@ import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS (this must be BEFORE any routes)
-app.use(
-  cors({
-    origin: ["https://pradyumanmishra20.github.io"], // your frontend
-    methods: ["GET", "POST"],
-    credentials: false,
-  })
-);
+// -------------------------
+// Setup
+// -------------------------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+const allowedOrigins = [
+  "https://pradyumanmishra20.github.io",
+  "https://noteease.up.railway.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+  ],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
-// ✅ Quick Test Route (to verify deployment & CORS)
-app.get("/", (req, res) => {
-  res.send("🚀 Backend live & CORS active!");
-});
 
 // ✅ Ensure uploads folder exists
 const uploadDir = path.join(__dirname, "uploads");
@@ -46,18 +62,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
-  storage,
-  limits: { fileSize: 2 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = /pdf|doc|docx|txt/;
-    const ext = path.extname(file.originalname).toLowerCase();
-    allowed.test(ext) ? cb(null, true) : cb(new Error("Invalid file type"));
-  },
-});
+const upload = multer({ storage });
 
 // -------------------------
-// ✅ MySQL Connection (Railway)
+// MySQL Connection (Direct)
 // -------------------------
 let db;
 const initDB = async () => {
@@ -80,13 +88,13 @@ const initDB = async () => {
 initDB();
 
 // -------------------------
-// ✅ Nodemailer Setup
+// Nodemailer Setup (Direct)
 // -------------------------
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "noteeaseofficial@gmail.com",
-    pass: "hxxf dmaj fcpm wvqr", // app password
+    pass: "hxxf dmaj fcpm wvqr", // Gmail App Password
   },
 });
 
@@ -105,21 +113,22 @@ const sendNotification = async (subject, htmlContent) => {
 };
 
 // -------------------------
-// ✅ ROUTES
+// ROUTES
 // -------------------------
 
-// Contact Form
+// ✅ Contact Form
 app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
     if (!name || !email || !message)
-      return res.status(400).json({ success: false, message: "All fields are required!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required!" });
 
-    await db.query("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)", [
-      name,
-      email,
-      message,
-    ]);
+    await db.query(
+      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
+      [name, email, message]
+    );
 
     await sendNotification(
       "📬 New Contact Message",
@@ -135,7 +144,7 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-// Writer Form
+// ✅ Writer Form
 app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
   try {
     const { name, email, phone, education, motivation } = req.body;
@@ -163,12 +172,45 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
   }
 });
 
-// Request Form
+// ✅ Order Form
+app.post("/api/order", async (req, res) => {
+  try {
+    const { name, email, topic, pages, budget, instructions } = req.body;
+    if (!name || !email || !topic || !pages || !budget)
+      return res
+        .status(400)
+        .json({ success: false, message: "Please fill all required fields!" });
+
+    await db.query(
+      "INSERT INTO orders (name, email, topic, pages, budget, instructions) VALUES (?, ?, ?, ?, ?, ?)",
+      [name, email, topic, pages, budget, instructions || ""]
+    );
+
+    await sendNotification(
+      "🛒 New Order Received",
+      `<h3>Order from ${name}</h3>
+       <p><b>Email:</b> ${email}</p>
+       <p><b>Topic:</b> ${topic}</p>
+       <p><b>Pages:</b> ${pages}</p>
+       <p><b>Budget:</b> ₹${budget}</p>
+       <p><b>Instructions:</b> ${instructions || "None"}</p>`
+    );
+
+    res.json({ success: true, message: "Order submitted successfully!" });
+  } catch (err) {
+    console.error("❌ Order error:", err);
+    res.status(500).json({ success: false, error: "Server error." });
+  }
+});
+
+// ✅ Request Form
 app.post("/api/request", async (req, res) => {
   try {
     const { name, phone, address, message } = req.body;
     if (!name || !phone || !address || !message)
-      return res.status(400).json({ success: false, message: "All fields are required!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required!" });
 
     await db.query(
       "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
@@ -191,8 +233,8 @@ app.post("/api/request", async (req, res) => {
 });
 
 // -------------------------
-// ✅ Start Server
+// Start Server
 // -------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
