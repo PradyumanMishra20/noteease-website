@@ -13,25 +13,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-// ✅ Allow your frontend domain
+// ✅ Allow your frontend domain (CORS)
 app.use(
   cors({
-    origin: "https://pradyumanmishra20.github.io", // your frontend URL
+    origin: "https://pradyumanmishra20.github.io",
     methods: ["GET", "POST"],
-    credentials: true, // if you're using cookies or auth headers
   })
 );
 
 app.use(express.json());
-
-// your routes here
-app.post("/api/request", (req, res) => {
-  res.json({ message: "Request received!" });
-});
-
-app.listen(3000, () => console.log("Server running on port 3000"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
 
 // ✅ Ensure uploads folder exists
 const uploadDir = path.join(__dirname, "uploads");
@@ -198,6 +191,7 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
 
