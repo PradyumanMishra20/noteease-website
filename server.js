@@ -13,14 +13,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-// ✅ Proper CORS for GitHub Pages
-app.use(cors({
-  origin: "https://pradyumanmishra20.github.io",
-  methods: ["GET", "POST"],
-  credentials: true,
-}));
+// ✅ Allow your frontend domain
+app.use(
+  cors({
+    origin: "https://pradyumanmishra20.github.io", // your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true, // if you're using cookies or auth headers
+  })
+);
 
 app.use(express.json());
+
+// your routes here
+app.post("/api/request", (req, res) => {
+  res.json({ message: "Request received!" });
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
