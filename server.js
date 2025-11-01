@@ -10,7 +10,7 @@ import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // -------------------------
 // Setup
@@ -262,4 +262,5 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
