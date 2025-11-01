@@ -104,36 +104,41 @@ const initDB = async () => {
 
     console.log("✅ MySQL connected successfully!");
 
-    // ✅ Create only required tables
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS generic_requests (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
-        address VARCHAR(255) NOT NULL,
-        message TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+   // ✅ Create only required tables (run one by one)
+await db.query(`
+  CREATE TABLE IF NOT EXISTS generic_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
 
-      CREATE TABLE IF NOT EXISTS writer_applications (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
-        education VARCHAR(255) NOT NULL,
-        writing_sample VARCHAR(255),
-        motivation TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+await db.query(`
+  CREATE TABLE IF NOT EXISTS writer_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    education VARCHAR(255) NOT NULL,
+    writing_sample VARCHAR(255),
+    motivation TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
 
-      CREATE TABLE IF NOT EXISTS contact_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        message TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+await db.query(`
+  CREATE TABLE IF NOT EXISTS contact_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 
     console.log("🛠️ Ensured all tables exist");
   } catch (err) {
@@ -301,6 +306,7 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
 
