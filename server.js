@@ -6,7 +6,6 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import mysql from "mysql2/promise";
-import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -150,30 +149,6 @@ await db.query(`
 
 initDB();
 
-// -------------------------
-// Nodemailer Setup (Direct)
-// -------------------------
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "noteeaseofficial@gmail.com",
-    pass: "hxxf dmaj fcpm wvqr", // Gmail App Password
-  },
-});
-
-const sendNotification = async (subject, htmlContent) => {
-  try {
-    await transporter.sendMail({
-      from: `"NoteEase Notifications" <noteeaseofficial@gmail.com>`,
-      to: "noteeaseofficial@gmail.com",
-      subject,
-      html: htmlContent,
-    });
-    console.log(`📩 Email sent: ${subject}`);
-  } catch (err) {
-    console.error("❌ Email send error:", err);
-  }
-};
 
 // -------------------------
 // ROUTES
@@ -306,6 +281,7 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
 
