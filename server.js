@@ -92,20 +92,21 @@ const initDB = async () => {
   try {
     db = await mysql.createPool({
       host: "trolley.proxy.rlwy.net",  // ✅ External Railway host
-      port: 14143,                     // ✅ Port from connection string
+      port: 14143,                     // ✅ Railway port
       user: "root",
       password: "DiBCrmcEHvQvrUipelILmekKIgnXorlb",
-      database: "noteease",            // ✅ Your actual DB name
+      database: "railway",             // ✅ Railway default DB name
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      ssl: { rejectUnauthorized: false }, // ✅ Required for Railway external connections
+      ssl: { rejectUnauthorized: false }, // ✅ Needed for Railway
     });
     console.log("✅ MySQL connected successfully!");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err);
   }
 };
+
 
 initDB();
 
@@ -265,6 +266,7 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
 
 
 
