@@ -4,7 +4,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📡 form-handler.js loaded and active!");
 
-  const BASE_URL = "https://noteease.up.railway.app";
+ const BASE_URL = "https://noteease-website-production.up.railway.app";
+
 
   // Helper function for form submission
   async function submitForm(event, endpoint, fieldIds) {
@@ -146,3 +147,4 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ requestForm active");
   }
 }); // ✅ ← this was also missing
+
