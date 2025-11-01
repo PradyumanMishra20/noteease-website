@@ -1,3 +1,4 @@
+
 // ✅ form-handler.js — handles all NoteEase forms safely and correctly
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -111,14 +112,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ Request Form
   const requestForm = document.getElementById("requestForm");
   if (requestForm) {
-    requestForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/request`, {
-        name: "requestName",
-        phone: "requestPhone",
-        address: "requestAddress",
-        message: "requestMessage",
-      })
-    );
+    requestForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+      const params = new URLSearchParams();
+      params.append("name", getVal("requestName"));
+      params.append("phone", getVal("requestPhone"));
+      params.append("address", getVal("requestAddress"));
+      params.append("message", getVal("requestMessage"));
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/request`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params,
+        });
+        const result = await res.json();
+        alert(result.message || "Form submitted successfully!");
+        requestForm.reset();
+        const confirmMsg = requestForm.nextElementSibling;
+        if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
+          confirmMsg.style.display = "block";
+          setTimeout(() => (confirmMsg.style.display = "none"), 4000);
+        }
+      } catch (err) {
+        console.error("❌ Form submission error:", err);
+        alert("Server error while submitting the form!");
+      }
+    });
     console.log("✅ requestForm active");
   }
 }); // ✅ ← this was also missing
