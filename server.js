@@ -1,14 +1,34 @@
-// ✅ server.js — NoteEase Backend API (no email system, ready for Railway)
+// ✅ server.js — NoteEase Backend API (with Telegram notifications, no email)
 import express from "express";
 import cors from "cors";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import mysql from "mysql2/promise";
+import axios from "axios";
 import { fileURLToPath } from "url";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// -------------------------
+// Telegram Bot Setup
+// -------------------------
+const TELEGRAM_BOT_TOKEN = "7225841813:AAGIfEhujVdF-AXVqK6eFQjQfgne6Rc4qCY";
+const TELEGRAM_CHAT_ID = "6378551807"; // 🔹 Replace with your chat ID
+
+async function sendTelegramMessage(text) {
+  try {
+    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      chat_id: TELEGRAM_CHAT_ID,
+      text,
+      parse_mode: "HTML",
+    });
+    console.log("📩 Telegram notification sent!");
+  } catch (err) {
+    console.error("❌ Telegram notification failed:", err.message);
+  }
+}
 
 // -------------------------
 // Setup
@@ -144,7 +164,6 @@ initDB();
 
 app.options("/api/contact", cors(corsOptions));
 app.options("/api/writer", cors(corsOptions));
-app.options("/api/order", cors(corsOptions));
 app.options("/api/request", cors(corsOptions));
 
 // ✅ Contact Form
@@ -155,6 +174,9 @@ app.post("/api/contact", async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required!" });
 
     await db.query("INSERT INTO contact_messages (name, message) VALUES (?, ?)", [name, message]);
+
+    await sendTelegramMessage(`📬 <b>New Contact Message</b>\n👤 Name: ${name}\n💬 Message: ${message}`);
+
     res.json({ success: true, message: "Message submitted successfully!" });
   } catch (err) {
     console.error("❌ Contact error:", err);
@@ -176,6 +198,10 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
       [name, phone, education, writing_sample, motivation]
     );
 
+    await sendTelegramMessage(
+      `📝 <b>New Writer Application</b>\n👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`
+    );
+
     res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
     console.error("❌ Writer error:", err);
@@ -193,6 +219,10 @@ app.post("/api/request", async (req, res) => {
     await db.query(
       "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
       [name, phone, address, message]
+    );
+
+    await sendTelegramMessage(
+      `📦 <b>New Request</b>\n👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`
     );
 
     res.json({ success: true, message: "Request submitted successfully!" });
