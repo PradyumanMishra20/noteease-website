@@ -1,5 +1,4 @@
-// ✅ server.js — NoteEase Backend API (no email system, ready for Railway)
-import nodemailer from "nodemailer";
+// ✅ server.js — NoteEase Backend API with Resend Email Notifications
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -7,6 +6,7 @@ import path from "path";
 import fs from "fs";
 import mysql from "mysql2/promise";
 import { fileURLToPath } from "url";
+import { Resend } from "resend";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ✅ Allowed Origins
 const allowedOrigins = [
   "https://pradyumanmishra20.github.io",
   "https://noteease.up.railway.app",
@@ -42,27 +43,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions)); // ✅ handles all OPTIONS preflight requests
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Vary", "Origin");
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With, Accept, Origin"
-    );
-  }
-  if (req.method === "OPTIONS") return res.sendStatus(200);
-  next();
-});
-
-// ✅ Ensure uploads folder exists
+// -------------------------
+// Ensure uploads folder
+// -------------------------
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
@@ -98,7 +86,6 @@ const initDB = async () => {
 
     console.log("✅ MySQL connected successfully!");
 
-    // ✅ Create required tables
     await db.query(`
       CREATE TABLE IF NOT EXISTS generic_requests (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -136,45 +123,42 @@ const initDB = async () => {
     console.error("❌ MySQL connection failed:", err);
   }
 };
-
 initDB();
 
 // -------------------------
-// ROUTES
+// Resend Setup
 // -------------------------
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// -------------------------
+// Routes
+// -------------------------
 app.options("/api/contact", cors(corsOptions));
 app.options("/api/writer", cors(corsOptions));
 app.options("/api/order", cors(corsOptions));
 app.options("/api/request", cors(corsOptions));
-
-// -------------------------
-// Nodemailer Setup
-// -------------------------
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 // ✅ Contact Form
 app.post("/api/contact", async (req, res) => {
   try {
     const { name, message } = req.body;
     if (!name || !message)
-      return res.status(400).json({ success: false, message: "All fields are required!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required!" });
 
-    await db.query("INSERT INTO contact_messages (name, message) VALUES (?, ?)", [name, message]);
+    await db.query("INSERT INTO contact_messages (name, message) VALUES (?, ?)", [
+      name,
+      message,
+    ]);
 
-     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    await resend.emails.send({
+      from: "NoteEase <onboarding@resend.dev>",
       to: process.env.EMAIL_USER,
       subject: "📩 New Contact Message",
       text: `👤 Name: ${name}\n💬 Message: ${message}`,
     });
-    
+
     res.json({ success: true, message: "Message submitted successfully!" });
   } catch (err) {
     console.error("❌ Contact error:", err);
@@ -189,15 +173,18 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
     const writing_sample = req.file ? req.file.filename : "No file uploaded";
 
     if (!name || !phone || !education || !motivation)
-      return res.status(400).json({ success: false, message: "All fields are required!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required!" });
 
     await db.query(
       "INSERT INTO writer_applications (name, phone, education, writing_sample, motivation) VALUES (?, ?, ?, ?, ?)",
       [name, phone, education, writing_sample, motivation]
     );
-    await transporter.sendMail({
-       from: process.env.EMAIL_USER,
-       to: process.env.EMAIL_USER,
+
+    await resend.emails.send({
+      from: "NoteEase <onboarding@resend.dev>",
+      to: process.env.EMAIL_USER,
       subject: "📝 New Writer Application",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
     });
@@ -214,19 +201,21 @@ app.post("/api/request", async (req, res) => {
   try {
     const { name, phone, address, message } = req.body;
     if (!name || !phone || !address || !message)
-      return res.status(400).json({ success: false, message: "All fields are required!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required!" });
 
     await db.query(
       "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
       [name, phone, address, message]
     );
-     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, 
+
+    await resend.emails.send({
+      from: "NoteEase <onboarding@resend.dev>",
+      to: process.env.EMAIL_USER,
       subject: "📦 New NoteEase Request",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
-
 
     res.json({ success: true, message: "Request submitted successfully!" });
   } catch (err) {
@@ -241,4 +230,3 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
