@@ -1,4 +1,5 @@
 // ✅ server.js — NoteEase Backend API (no email system, ready for Railway)
+import nodemailer from "nodemailer";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -147,6 +148,17 @@ app.options("/api/writer", cors(corsOptions));
 app.options("/api/order", cors(corsOptions));
 app.options("/api/request", cors(corsOptions));
 
+// -------------------------
+// Nodemailer Setup
+// -------------------------
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 // ✅ Contact Form
 app.post("/api/contact", async (req, res) => {
   try {
@@ -155,6 +167,14 @@ app.post("/api/contact", async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required!" });
 
     await db.query("INSERT INTO contact_messages (name, message) VALUES (?, ?)", [name, message]);
+
+     await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "📩 New Contact Message",
+      text: `👤 Name: ${name}\n💬 Message: ${message}`,
+    });
+    
     res.json({ success: true, message: "Message submitted successfully!" });
   } catch (err) {
     console.error("❌ Contact error:", err);
@@ -175,6 +195,12 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
       "INSERT INTO writer_applications (name, phone, education, writing_sample, motivation) VALUES (?, ?, ?, ?, ?)",
       [name, phone, education, writing_sample, motivation]
     );
+    await transporter.sendMail({
+       from: process.env.EMAIL_USER,
+       to: process.env.EMAIL_USER,
+      subject: "📝 New Writer Application",
+      text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
+    });
 
     res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
@@ -194,6 +220,13 @@ app.post("/api/request", async (req, res) => {
       "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
       [name, phone, address, message]
     );
+     await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER, 
+      subject: "📦 New NoteEase Request",
+      text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
+    });
+
 
     res.json({ success: true, message: "Request submitted successfully!" });
   } catch (err) {
@@ -208,3 +241,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
