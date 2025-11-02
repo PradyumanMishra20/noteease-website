@@ -1,4 +1,4 @@
-// ✅ server.js — NoteEase Backend API with Resend Email Notifications
+// ✅ server.js — NoteEase Backend API with Resend Email Notifications + Autoresponder
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -129,6 +129,7 @@ initDB();
 // Resend Setup
 // -------------------------
 const resend = new Resend(process.env.RESEND_API_KEY);
+const AUTO_REPLY_EMAIL = "NoteEase <noreply@noteease.in>"; // Replace with verified domain
 
 // -------------------------
 // Routes
@@ -138,10 +139,10 @@ app.options("/api/writer", cors(corsOptions));
 app.options("/api/order", cors(corsOptions));
 app.options("/api/request", cors(corsOptions));
 
-// ✅ Contact Form
+// ✅ CONTACT FORM
 app.post("/api/contact", async (req, res) => {
   try {
-    const { name, message } = req.body;
+    const { name, message, email } = req.body;
     if (!name || !message)
       return res
         .status(400)
@@ -152,12 +153,23 @@ app.post("/api/contact", async (req, res) => {
       message,
     ]);
 
+    // 🔔 Send admin notification
     await resend.emails.send({
-      from: "NoteEase <onboarding@resend.dev>",
+      from: AUTO_REPLY_EMAIL,
       to: "pradyuman212@gmail.com",
       subject: "📩 New Contact Message",
       text: `👤 Name: ${name}\n💬 Message: ${message}`,
     });
+
+    // 📧 Autoresponder to user
+    if (email) {
+      await resend.emails.send({
+        from: AUTO_REPLY_EMAIL,
+        to: email,
+        subject: "✅ We Got Your Message!",
+        text: `Hi ${name},\n\nThanks for reaching out to NoteEase!\nYour message has been received — we’ll get back to you soon.\n\nBest,\nTeam NoteEase 🧠`,
+      });
+    }
 
     res.json({ success: true, message: "Message submitted successfully!" });
   } catch (err) {
@@ -166,10 +178,10 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-// ✅ Writer Form
+// ✅ WRITER FORM
 app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
   try {
-    const { name, phone, education, motivation } = req.body;
+    const { name, phone, education, motivation, email } = req.body;
     const writing_sample = req.file ? req.file.filename : "No file uploaded";
 
     if (!name || !phone || !education || !motivation)
@@ -182,12 +194,23 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
       [name, phone, education, writing_sample, motivation]
     );
 
+    // 🔔 Notify admin
     await resend.emails.send({
-      from: "NoteEase <onboarding@resend.dev>",
+      from: AUTO_REPLY_EMAIL,
       to: "pradyuman212@gmail.com",
       subject: "📝 New Writer Application",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
     });
+
+    // 📧 Autoresponder
+    if (email) {
+      await resend.emails.send({
+        from: AUTO_REPLY_EMAIL,
+        to: email,
+        subject: "🧠 Thanks for Applying as a Writer!",
+        text: `Hi ${name},\n\nWe’ve received your writer application and will review it shortly.\nOur team will reach out if your profile matches our needs.\n\nBest,\nTeam NoteEase ✍️`,
+      });
+    }
 
     res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
@@ -196,10 +219,10 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
   }
 });
 
-// ✅ Request Form
+// ✅ REQUEST FORM
 app.post("/api/request", async (req, res) => {
   try {
-    const { name, phone, address, message } = req.body;
+    const { name, phone, address, message, email } = req.body;
     if (!name || !phone || !address || !message)
       return res
         .status(400)
@@ -210,14 +233,23 @@ app.post("/api/request", async (req, res) => {
       [name, phone, address, message]
     );
 
-    console.log("📤 Sending email...");
-    const emailResponse = await resend.emails.send({
-      from: "NoteEase <onboarding@resend.dev>",
+    // 🔔 Admin notification
+    await resend.emails.send({
+      from: AUTO_REPLY_EMAIL,
       to: "pradyuman212@gmail.com",
       subject: "📦 New NoteEase Request",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
-    console.log("✅ Email response:", emailResponse);
+
+    // 📧 Autoresponder
+    if (email) {
+      await resend.emails.send({
+        from: AUTO_REPLY_EMAIL,
+        to: email,
+        subject: "✅ Your NoteEase Request Was Received!",
+        text: `Hi ${name},\n\nThank you for reaching out to NoteEase!\nWe’ve received your request and our team will get back to you soon.\n\nBest,\nTeam NoteEase 📚`,
+      });
+    }
 
     res.json({ success: true, message: "Request submitted successfully!" });
   } catch (err) {
@@ -232,4 +264,3 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
