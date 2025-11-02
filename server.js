@@ -154,7 +154,7 @@ app.post("/api/contact", async (req, res) => {
 
     await resend.emails.send({
       from: "NoteEase <onboarding@resend.dev>",
-      to: process.env.EMAIL_USER,
+      to: "pradyuman212@gmail.com",
       subject: "📩 New Contact Message",
       text: `👤 Name: ${name}\n💬 Message: ${message}`,
     });
@@ -184,7 +184,7 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
 
     await resend.emails.send({
       from: "NoteEase <onboarding@resend.dev>",
-      to: process.env.EMAIL_USER,
+      to: "pradyuman212@gmail.com",
       subject: "📝 New Writer Application",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
     });
@@ -213,7 +213,7 @@ app.post("/api/request", async (req, res) => {
     console.log("📤 Sending email...");
     const emailResponse = await resend.emails.send({
       from: "NoteEase <onboarding@resend.dev>",
-      to: process.env.EMAIL_USER,
+      to: "pradyuman212@gmail.com",
       subject: "📦 New NoteEase Request",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
@@ -232,3 +232,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
