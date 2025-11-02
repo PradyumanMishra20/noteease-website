@@ -129,6 +129,15 @@ initDB();
 // Resend Setup
 // -------------------------
 const resend = new Resend(process.env.RESEND_API_KEY);
+console.log("📤 Sending email...");
+const emailResponse = await resend.emails.send({
+  from: "NoteEase <onboarding@resend.dev>",
+  to: process.env.EMAIL_USER,
+  subject: "📦 New NoteEase Request",
+  text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
+});
+console.log("✅ Email response:", emailResponse);
+
 
 // -------------------------
 // Routes
@@ -230,3 +239,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
