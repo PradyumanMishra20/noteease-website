@@ -129,8 +129,6 @@ initDB();
 // Resend Setup
 // -------------------------
 const resend = new Resend(process.env.RESEND_API_KEY);
-const AUTO_REPLY_EMAIL = "NoteEase <noreply@noteease.in>"; // Replace with verified domain
-
 // -------------------------
 // Routes
 // -------------------------
@@ -161,15 +159,6 @@ app.post("/api/contact", async (req, res) => {
       text: `👤 Name: ${name}\n💬 Message: ${message}`,
     });
 
-    // 📧 Autoresponder to user
-    if (email) {
-      await resend.emails.send({
-        from: AUTO_REPLY_EMAIL,
-        to: email,
-        subject: "✅ We Got Your Message!",
-        text: `Hi ${name},\n\nThanks for reaching out to NoteEase!\nYour message has been received — we’ll get back to you soon.\n\nBest,\nTeam NoteEase 🧠`,
-      });
-    }
 
     res.json({ success: true, message: "Message submitted successfully!" });
   } catch (err) {
@@ -202,15 +191,7 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
     });
 
-    // 📧 Autoresponder
-    if (email) {
-      await resend.emails.send({
-        from: AUTO_REPLY_EMAIL,
-        to: email,
-        subject: "🧠 Thanks for Applying as a Writer!",
-        text: `Hi ${name},\n\nWe’ve received your writer application and will review it shortly.\nOur team will reach out if your profile matches our needs.\n\nBest,\nTeam NoteEase ✍️`,
-      });
-    }
+  
 
     res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
@@ -241,15 +222,7 @@ app.post("/api/request", async (req, res) => {
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
 
-    // 📧 Autoresponder
-    if (email) {
-      await resend.emails.send({
-        from: AUTO_REPLY_EMAIL,
-        to: email,
-        subject: "✅ Your NoteEase Request Was Received!",
-        text: `Hi ${name},\n\nThank you for reaching out to NoteEase!\nWe’ve received your request and our team will get back to you soon.\n\nBest,\nTeam NoteEase 📚`,
-      });
-    }
+  
 
     res.json({ success: true, message: "Request submitted successfully!" });
   } catch (err) {
@@ -264,3 +237,4 @@ app.post("/api/request", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
