@@ -1,4 +1,4 @@
-:root {
+v:root {
   --primary: #ff4d6d;
   --secondary: #6c5ce7;
   --accent: #00d2ff;
@@ -906,6 +906,157 @@ footer {
   transform: translateY(-6px);
   box-shadow: 0 12px 28px rgba(0,0,0,0.08);
   border-color: rgba(37,99,235,0.2);
+}
+
+/* -------------------------
+   Promotions / Offers
+--------------------------- */
+.promotions {
+  background: #fdf6f0; /* matching main bg */
+  padding: 30px 0;
+  text-align: center;
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+
+.promotions .promo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.promotions .promo-banner i {
+  color: var(--primary);
+  font-size: 2rem;
+}
+
+/* -------------------------
+   FAQ Section
+--------------------------- */
+.faq {
+  padding: 50px 0;
+  background: #fdf6f0; /* matching main bg */
+}
+
+.faq h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+.faq-item {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  margin-bottom: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.faq-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+}
+
+.faq-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.faq-item p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* -------------------------
+   Statistics / Counter Section
+--------------------------- */
+.stats {
+  background: #fdf6f0; /* matching main bg */
+  padding: 60px 0;
+}
+
+.stats-flex {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.stats .stat {
+  background: var(--card);
+  padding: 30px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  flex: 1 1 200px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stats .stat:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+}
+
+.stats .stat i {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.stats .stat h3 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.stats .stat p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* -------------------------
+   Secure Payment / Guarantee Section
+--------------------------- */
+.guarantee {
+  background: #fdf6f0; /* matching main bg */
+  padding: 50px 0;
+}
+
+.guarantee-flex {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.guarantee-item {
+  background: var(--card);
+  padding: 25px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  flex: 1 1 200px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.guarantee-item i {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.guarantee-item p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.guarantee-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.1);
 }
 
 /* -------------------------
