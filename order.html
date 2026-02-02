@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteEase - Place Order</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="container">
+    <h1>NoteEase – Effortless Notes for Every Student</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+      <a href="order.html">Order</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Order Hero -->
+<section class="hero">
+  <div class="container">
+    <h2>Place Your Order</h2>
+    <p>
+      Provide clear details so our writers can prepare accurate,
+      well-structured notes for you.
+    </p>
+  </div>
+</section>
+
+ <section class="process-section">
+  <div class="container">
+    <h2>How NoteEase Works</h2>
+    <p class="process-desc">
+      NoteEase follows a simple and transparent process to make sure you get
+      high-quality notes without confusion.
+    </p>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <span class="step-number">1</span>
+        <h3>Place Your Order</h3>
+        <p>
+          Fill out the order form with your subject, topic, and required length
+          of notes.
+        </p>
+      </div>
+
+      <div class="process-step">
+        <span class="step-number">2</span>
+        <h3>We Contact You</h3>
+        <p>
+          After placing the order, our team will contact you through Gmail to
+          confirm details.
+        </p>
+      </div>
+
+      <div class="process-step">
+        <span class="step-number">3</span>
+        <h3>Share Required Documents</h3>
+        <p>
+          You can share syllabus, reference material, or sample notes if
+          required.
+        </p>
+      </div>
+
+      <div class="process-step">
+        <span class="step-number">4</span>
+        <h3>Assigned to a Writer</h3>
+        <p>
+          Based on your subject, we connect you with a suitable NoteEase writer.
+        </p>
+      </div>
+
+      <div class="process-step">
+        <span class="step-number">5</span>
+        <h3>Notes Delivered on Time</h3>
+        <p>
+          Notes are delivered according to the required length, and the delivery
+          time is shared with you in advance.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Order Form -->
+<section class="order-section">
+  <div class="container">
+
+    <form class="order-form" id="orderForm">
+
+      <div class="form-group">
+        <label for="studentName">Full Name</label>
+        <input type="text" id="studentName" name="student_name"
+               placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="studentEmail">Email Address</label>
+        <input type="email" id="studentEmail" name="student_email"
+               placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="studentPhone">Phone Number</label>
+        <input type="tel" id="studentPhone" name="student_phone"
+               placeholder="Enter your phone number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" name="subject" required>
+          <option value="">Select subject</option>
+          <option>Mathematics</option>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Biology</option>
+          <option>English</option>
+          <option>History</option>
+          <option>Civics</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="topic">Topic / Chapter</label>
+        <input type="text" id="topic" name="topic"
+               placeholder="Enter topic or chapter name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="notesType">Type of Notes</label>
+        <select id="notesType" name="notes_type" required>
+          <option value="">Select type</option>
+          <option>Short Notes</option>
+          <option>Detailed Notes</option>
+          <option>Exam-Oriented Notes</option>
+          <option>Question & Answer Format</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="pages">Approximate Pages</label>
+        <input type="number" id="pages" name="pages"
+               placeholder="e.g. 5" min="1" required>
+      </div>
+
+      <div class="form-group">
+        <label for="deadline">Deadline</label>
+        <input type="date" id="deadline" name="deadline" required>
+      </div>
+
+      <div class="form-group">
+        <label for="instructions">Additional Instructions (Optional)</label>
+        <textarea id="instructions" name="instructions" rows="4"
+                  placeholder="Any syllabus, format, or specific requirements..."></textarea>
+      </div>
+
+      <p class="form-trust">
+        Please verify all details before submitting your order.
+      </p>
+
+      <button type="submit" class="order-btn">Submit Order</button>
+
+    </form>
+
+    <p class="success-msg" style="display:none;">
+      Order submitted successfully!
+    </p>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-flex">
+    <p>&copy; 2025 NoteEase. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp Floating -->
+<div class="social-floating">
+  <a href="https://wa.me/918454894108" target="_blank" class="float-btn">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+</div>
+<script src="form-handler.js"></script>
+
+
+</body>
+</html>
