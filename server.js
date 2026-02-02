@@ -145,22 +145,107 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
   }
 });
 
+// -------------------------
+// ORDER
+// -------------------------
+app.post("/api/order", async (req, res) => {
+  try {
+    const {
+      student_name,
+      student_email,
+      student_phone,
+      subject,
+      topic,
+      notes_type,
+      pages,
+      deadline,
+      instructions,
+    } = req.body;
+
+    if (
+      !student_name ||
+      !student_email ||
+      !student_phone ||
+      !subject ||
+      !topic ||
+      !notes_type ||
+      !pages ||
+      !deadline
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be filled",
+      });
+    }
+
+    // Save to DB
+    await db.query(
+      `INSERT INTO orders 
+      (student_name, student_email, student_phone, subject, topic, notes_type, pages, deadline, instructions)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        student_name,
+        student_email,
+        student_phone,
+        subject,
+        topic,
+        notes_type,
+        pages,
+        deadline,
+        instructions || null,
+      ]
+    );
+
+    // Send Email
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: "pradyuman212@gmail.com",
+      subject: "🧾 New Order Received - NoteEase",
+      text: `
+👤 Name: ${student_name}
+📧 Email: ${student_email}
+📞 Phone: ${student_phone}
+📘 Subject: ${subject}
+📝 Topic: ${topic}
+📄 Notes Type: ${notes_type}
+📚 Pages: ${pages}
+⏰ Deadline: ${deadline}
+
+📌 Instructions:
+${instructions || "None"}
+      `,
+    });
+
+    res.json({
+      success: true,
+      message: "Order placed successfully! We will contact you soon.",
+    });
+
+  } catch (err) {
+    console.error("❌ Order error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while placing order",
+    });
+  }
+});
+
 
 // REQUEST
 app.post("/api/request", async (req, res) => {
   try {
-    const { name, phone, address, message } = req.body;
+    const { name, phone, email, address, message } = req.body;
 
     await db.query(
-      "INSERT INTO generic_requests (name, phone, address, message) VALUES (?, ?, ?, ?)",
-      [name, phone, address, message]
+      "INSERT INTO generic_requests (name, phone, email, address, message) VALUES (?, ?, ?, ?, ?)",
+      [name, phone, email, address, message]
     );
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: "pradyuman212@gmail.com",
       subject: "📦 New NoteEase Request",
-      text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${address}\n💬 Message: ${message}`,
+      text: `👤 Name: ${name}\n📞 Phone: ${phone}\n 📧 Email: ${email}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
 
     res.json({ success: true });
