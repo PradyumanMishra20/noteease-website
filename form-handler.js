@@ -106,61 +106,50 @@ document.addEventListener("DOMContentLoaded", () => {
 // Order Form
 // -------------------------
 const orderForm = document.getElementById("orderForm");
+
 if (orderForm) {
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const getVal = (id) => {
-      const el = document.getElementById(id);
-      return el ? el.value.trim() : "";
-    };
-
     const data = {
-      student_name: getVal("studentName"),
-      student_email: getVal("studentEmail"),
-      student_phone: getVal("studentPhone"),
-      subject: getVal("subject"),
-      topic: getVal("topic"),
-      notes_type: getVal("notesType"),
-      pages: getVal("pages"),
-      deadline: getVal("deadline"),
-      instructions: getVal("instructions")
+      student_name: document.getElementById("studentName").value.trim(),
+      student_email: document.getElementById("studentEmail").value.trim(),
+      student_phone: document.getElementById("studentPhone").value.trim(),
+      subject: document.getElementById("subject").value,
+      topic: document.getElementById("topic").value.trim(),
+      notes_type: document.getElementById("notesType").value,
+      pages: document.getElementById("pages").value,
+      deadline: document.getElementById("deadline").value,
+      instructions: document.getElementById("instructions").value.trim(),
     };
-
-    // Check if any required field is empty
-    for (let key in data) {
-      if (!data[key] && key !== "instructions") {
-        alert(`Please fill in all required fields (${key})`);
-        return;
-      }
-    }
 
     try {
       const res = await fetch(`${BASE_URL}/api/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
       const result = await res.json();
+
       alert(result.message || "Order submitted successfully!");
       orderForm.reset();
 
-      // Show success message
-      const confirmMsg = orderForm.nextElementSibling;
-      if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
-        confirmMsg.style.display = "block";
-        setTimeout(() => (confirmMsg.style.display = "none"), 4000);
+      const successMsg = document.querySelector(".success-msg");
+      if (successMsg) {
+        successMsg.style.display = "block";
+        setTimeout(() => (successMsg.style.display = "none"), 4000);
       }
 
     } catch (err) {
       console.error("❌ Order submit error:", err);
-      alert("Server error! Please try again later or contact us via WhatsApp.");
+      alert("Server error! Please try again later.");
     }
   });
+
+  console.log("✅ orderForm active");
 }
+
 
   // -------------------------
   // Request Form
@@ -176,9 +165,13 @@ if (orderForm) {
         return el ? el.value.trim() : "";
       };
       params.append("name", getVal("requestName"));
+       params.append("email", getVal("requestEmail"));
       params.append("phone", getVal("requestPhone"));
       params.append("address", getVal("requestAddress"));
       params.append("message", getVal("requestMessage"));
+
+      console.log("📦 Request form data:", params.toString());
+
 
       fetch(`${BASE_URL}/api/request`, {
         method: "POST",
