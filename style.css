@@ -1994,3 +1994,90 @@ footer {
   }
 }
 
+/* =========================
+   MOBILE LAYOUT OVERRIDES
+   (NO REMOVALS)
+========================= */
+@media (max-width: 768px) {
+
+  /* 1️⃣ Neutralize ALL manual offsets */
+  .container *,
+  section *,
+  header *,
+  .hero *,
+  .stats *,
+  .guarantee *,
+  .writer-cta *,
+  .promotions * {
+    left: auto !important;
+    right: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* 2️⃣ Force safe positioning */
+  .stats h2,
+  .guarantee h2,
+  .container .para,
+  .writer-cta p,
+  .promotions {
+    position: static !important;
+    text-align: center;
+  }
+
+  /* 3️⃣ Kill horizontal layouts that overflow */
+  .process-steps {
+    grid-auto-flow: row !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  /* 4️⃣ Grids always stack correctly */
+  .stats-flex,
+  .guarantee-flex,
+  .writer-profiles .container {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 5️⃣ Cards fill screen properly */
+  .process-step,
+  .step,
+  .card,
+  .tier,
+  .writer,
+  .stat,
+  .guarantee-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 6️⃣ CTA alignment */
+  .writer-cta {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* 7️⃣ Forms never overflow */
+  form,
+  .order-form,
+  .contact-card,
+  #cont {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* 8️⃣ Buttons full-width */
+  .btn,
+  .writer-btn,
+  .order-btn,
+  form button {
+    width: 100% !important;
+  }
+
+  /* 9️⃣ Prevent accidental horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+}
+
