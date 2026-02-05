@@ -1167,6 +1167,9 @@ form .field:focus-within label {
 
 .writer-profiles {
   background: linear-gradient(90deg, var(--primary), var(--secondary));
+  margin-top: 40px;
+  border-radius: var(--radius);
+
 }
 
 .writer {
@@ -1205,6 +1208,8 @@ form .field:focus-within label {
 ------------------------- */
 .pricing-tiers {
    background: linear-gradient(90deg, var(--primary), var(--secondary));
+   margin-top: 40px;
+   border-radius: var(--radius);
 }
 .pricing-tiers .container {
   display: flex;
@@ -1662,3 +1667,386 @@ footer {
   50% { transform: translateY(-6px); }
 }
 
+/* =========================================
+   RESPONSIVE PATCH – SAFE OVERRIDES
+   (Do NOT edit existing CSS above)
+========================================= */
+
+/* Global safety */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Prevent fixed widths from breaking layout */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Header fixes (logo + title alignment) */
+header .container {
+  justify-content: center;
+  gap: 12px;
+}
+
+header h1 {
+  position: static !important;
+  text-align: center;
+}
+
+header img {
+  position: static !important;
+}
+
+/* Sections that were pushed left/right */
+.stats h2,
+.guarantee h2,
+.container .para,
+.writer-cta p {
+  position: static !important;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Promotions section centering */
+.promotions {
+  position: static !important;
+  left: auto !important;
+  width: 92% !important;
+  max-width: 1100px;
+  margin: 20px auto !important;
+}
+
+/* Guarantee + stats grid alignment */
+.stats-flex,
+.guarantee-flex {
+  justify-content: center !important;
+  margin-left: 0 !important;
+}
+
+/* Cards never overflow */
+.step,
+.card,
+.writer,
+.tier,
+.stat,
+.guarantee-item,
+.process-step {
+  max-width: 100%;
+}
+
+/* Forms scale properly */
+#cont,
+.contact-card,
+.order-form,
+form {
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Process steps overflow safety */
+.process-steps {
+  margin-left: 0 !important;
+  padding-left: 12px;
+}
+
+/* =====================
+   MOBILE ADJUSTMENTS
+===================== */
+@media (max-width: 768px) {
+
+  header .container {
+    flex-direction: column;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .writer-cta {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .stats-flex,
+  .guarantee-flex {
+    flex-direction: column;
+  }
+}
+
+/* =====================
+   SMALL PHONES
+===================== */
+@media (max-width: 480px) {
+
+  section {
+    padding: 40px 14px;
+  }
+
+  .hero h1 {
+    font-size: 1.35rem;
+  }
+
+  .process-step {
+    width: 100%;
+  }
+}
+/* =========================
+   FIX: How It Works (Order Page)
+   Mobile & Tablet Safe
+========================= */
+
+@media (max-width: 900px) {
+
+  .process-steps {
+    grid-auto-flow: row;                 /* stop horizontal scroll */
+    grid-template-columns: 1fr;          /* stack cards */
+    margin-left: 0;                      /* remove shift */
+    justify-items: center;
+    row-gap: 20px;
+  }
+
+  .process-step {
+    width: 100%;                         /* fluid cards */
+    max-width: 420px;                   /* keeps design tight */
+  }
+}
+
+@media (min-width: 901px) {
+  .process-steps {
+    overflow-x: auto;                    /* keep desktop scroll */
+  }
+}
+/* =========================
+   FIX STATS & GUARANTEE CENTERING
+   (Responsive Safe Override)
+========================= */
+
+/* Reset heading alignment */
+.stats h2,
+.guarantee h2 {
+  position: static !important;
+  left: auto !important;
+  bottom: auto !important;
+  text-align: center;
+  margin: 0 auto 20px;
+}
+
+/* Center stat cards */
+.stats-flex {
+  justify-content: center !important;
+  margin-left: 0 !important;
+}
+
+/* Center guarantee cards */
+.guarantee-flex {
+  justify-content: center !important;
+  margin-left: 0 !important;
+}
+
+/* Ensure cards don’t stretch weirdly */
+.stats .stat,
+.guarantee-item {
+  max-width: 320px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .stats-flex,
+  .guarantee-flex {
+    row-gap: 24px;
+  }
+}
+/* =====================================
+   HARD CENTER FIX — STATS & GUARANTEE
+   (Desktop + Mobile)
+===================================== */
+
+/* Force sections to behave as centered blocks */
+.stats,
+.guarantee {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Fix headings */
+.stats h2,
+.guarantee h2 {
+  position: static !important;
+  left: auto !important;
+  bottom: auto !important;
+  margin: 0 auto 30px !important;
+  text-align: center !important;
+  width: 100%;
+}
+
+/* Center card containers */
+.stats-flex,
+.guarantee-flex {
+  display: flex;
+  justify-content: center !important;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto !important;
+  padding: 0 16px;
+}
+
+/* Normalize card width */
+.stats .stat,
+.guarantee-item {
+  flex: 1 1 240px;
+  max-width: 300px;
+  width: 100%;
+}
+
+/* =====================
+   MOBILE REFINEMENT
+===================== */
+@media (max-width: 768px) {
+  .stats-flex,
+  .guarantee-flex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stats .stat,
+  .guarantee-item {
+    max-width: 92%;
+  }
+}
+/* ===============================
+   Header Logo + Text Gap Fix
+   (Desktop only)
+=============================== */
+
+@media (min-width: 769px) {
+  header .container {
+    gap: 10px; /* natural spacing */
+  }
+
+  header img {
+    right: 0 !important;
+    margin-right: 6px;
+  }
+
+  header h1 {
+    right: 0 !important;
+    margin-left: 0;
+    white-space: nowrap;
+  }
+}
+/* ===============================
+   Header alignment FIX (Desktop)
+=============================== */
+
+@media (min-width: 769px) {
+
+  header .container {
+    justify-content: flex-start !important;
+    gap: 8px;
+  }
+
+  header nav {
+    margin-left: auto; /* pushes nav to the right */
+  }
+
+  /* kill artificial positioning */
+  header img,
+  header h1 {
+    position: static !important;
+  }
+}
+/* ===============================
+   Remove gap between logo & h1
+=============================== */
+
+header h1 {
+  margin: 0 !important;
+}
+
+header img {
+  margin: 0 !important;
+}
+
+/* tighten spacing just a bit */
+header .container {
+  gap: 6px;
+}
+
+/* ==================================
+   Remove double / triple form boxes
+================================== */
+
+/* Forms should NOT create their own card
+   when already inside a card container */
+#writerForm,
+#requestForm {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ======================================
+   FIX date & file input appearance
+   (NO layout break, NO animation loss)
+====================================== */
+
+/* Reset weird browser + animation effects */
+input[type="file"],
+input[type="date"] {
+  background: #fff !important;
+  box-shadow: none !important;
+  transform: none !important;
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+/* Prevent hover/focus animations */
+input[type="file"]:hover,
+input[type="file"]:focus,
+input[type="date"]:hover,
+input[type="date"]:focus {
+  transform: none !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 109, 0.2);
+  outline: none;
+}
+
+/* Fix file button (Chrome / Edge) */
+input[type="file"]::file-selector-button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Firefox compatibility */
+input[type="file"]::-webkit-file-upload-button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
