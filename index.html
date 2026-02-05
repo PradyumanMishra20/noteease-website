@@ -18,7 +18,7 @@
   <!-- Header -->
   <header>
     <div class="container">
-      <h1><img src="C:\Users\Anuj\Downloads\noteeaselogo.png" alt="NoteEase Logo" style="width: 50px;"> – Effortless Notes for Every Student</h1>
+      <img src="./logo.png" alt="NoteEase Logo"><h1>– Effortless Notes for Every Student</h1>
       <nav>
          <a href="index.html" class="active">Home</a>
         <a href="writers.html">Writers</a>
@@ -34,62 +34,40 @@
     <div class="container">
       <h1>Get Your Notes Written by Experts — Stress Free</h1>
       <p>Upload handwritten notes or bring them to us. We type, format, print and deliver — you pay only after delivery.</p>
-      <a class="btn primary" href="order.html">Place Your Order <i class="fas fa-arrow-right"></i></a>
+      <a class="btn primary" href="order.html#orderForm">Place Your Order <i class="fas fa-arrow-right"></i></a>
       <a class="btn secondary" href="#how-it-works">How It Works</a>
     </div>
   </section>
 
-   <section class="process-section">
+   <!-- WHO IS THIS FOR -->
+<section id="who-is-this-for">
   <div class="container">
-    <h2>How NoteEase Works</h2>
-    <p class="process-desc">
-      NoteEase follows a simple and transparent process to make sure you get
-      high-quality notes without confusion.
-    </p>
+    <h2>Who Is NoteEase For?</h2>
+    <p>Designed for students who want clean notes without wasting time or energy.</p>
 
-    <div class="process-steps">
-      <div class="process-step">
-        <span class="step-number">1</span>
-        <h3>Place Your Order</h3>
-        <p>
-          Fill out the order form with your subject, topic, and required length
-          of notes.
-        </p>
+    <div class="steps">
+      <div class="step">
+        <i class="fas fa-school"></i>
+        <h3>School Students</h3>
+        <p>Perfect for fair notebooks, assignments, and exam preparation.</p>
       </div>
 
-      <div class="process-step">
-        <span class="step-number">2</span>
-        <h3>We Contact You</h3>
-        <p>
-          After placing the order, our team will contact you through Gmail to
-          confirm details.
-        </p>
+      <div class="step">
+        <i class="fas fa-university"></i>
+        <h3>College Students</h3>
+        <p>Get structured, professional notes for submissions and records.</p>
       </div>
 
-      <div class="process-step">
-        <span class="step-number">3</span>
-        <h3>Share Required Documents</h3>
-        <p>
-          You can share syllabus, reference material, or sample notes if
-          required.
-        </p>
+      <div class="step">
+        <i class="fas fa-book-reader"></i>
+        <h3>Exam Aspirants</h3>
+        <p>Typed notes that are easy to revise and print anytime.</p>
       </div>
 
-      <div class="process-step">
-        <span class="step-number">4</span>
-        <h3>Assigned to a Writer</h3>
-        <p>
-          Based on your subject, we connect you with a suitable NoteEase writer.
-        </p>
-      </div>
-
-      <div class="process-step">
-        <span class="step-number">5</span>
-        <h3>Notes Delivered on Time</h3>
-        <p>
-          Notes are delivered according to the required length, and the delivery
-          time is shared with you in advance.
-        </p>
+      <div class="step">
+        <i class="fas fa-user-clock"></i>
+        <h3>Busy Students</h3>
+        <p>If handwriting notes feels tiring or time-consuming — we handle it.</p>
       </div>
     </div>
   </div>
@@ -109,7 +87,7 @@
   <section id="how-it-works">
     <div class="container">
       <h2>How It Works</h2>
-      <p>Simple process — submit notes, let our experts type & format, get physical delivery, pay after delivery.</p>
+      <p class="para">Simple process — submit notes, let our experts type & format, get physical delivery, pay after delivery.</p>
       <div class="steps">
         <div class="step">
           <i class="fas fa-hand-holding"></i>
@@ -139,7 +117,7 @@
   <section class="why-choose">
     <div class="container">
       <h2>Why Choose NoteEase</h2>
-      <p>Trusted by students for accuracy, speed and affordability.</p>
+      <p class="para">Trusted by students for accuracy, speed and affordability.</p>
       <div class="why-grid">
         <div class="why-card"><i class="fas fa-copy"></i><h4>Exact Copy</h4><p>We write exactly what you provide — no guesses.</p></div>
         <div class="why-card"><i class="fas fa-bolt"></i><h4>Fast Delivery</h4><p>Quick turnaround so you never miss deadlines.</p></div>
@@ -164,9 +142,10 @@
 
 
   <!-- CONTACT -->
-  <section id="contact">
-    <div class="container">
-       <h2>Feedback</h2>
+  <section class="container">
+    <h2>Feedback</h2>
+    <div class="contact-card">
+       
     <p>We’d love to hear your feedback to improve our services.</p>
       <div class="contact-card">
         <form id="requestForm">
@@ -202,10 +181,6 @@
   <div class="social-floating">
     <a href="https://wa.me/918454894108" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
   </div>
-
-  <!-- BACK TO TOP -->
-  <button id="backToTop" aria-label="Back to top">↑</button>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="script.js"></script>
 <script src="form-handler.js" defer></script>
@@ -213,4 +188,3 @@
 
 </body>
 </html>
-
