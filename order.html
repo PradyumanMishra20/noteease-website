@@ -13,7 +13,7 @@
 <!-- Header -->
 <header>
   <div class="container">
-    <h1>NoteEase – Effortless Notes for Every Student</h1>
+     <img src="./logo.png" alt="NoteEase Logo"><h1>– Effortless Notes for Every Student</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="writers.html">Writers</a>
@@ -26,14 +26,16 @@
 
 <!-- Order Hero -->
 <section class="hero">
-  <div class="container">
+  <div id="container">
     <h2>Place Your Order</h2>
     <p>
       Provide clear details so our writers can prepare accurate,
       well-structured notes for you.
     </p>
+    <a class="btn primary" href="#orderForm" style="position: relative; left: 10px;">Place Your Order <i class="fas fa-arrow-right"></i></a>
   </div>
 </section>
+
 
  <section class="process-section">
   <div class="container">
@@ -91,9 +93,13 @@
   </div>
 </section>
 
+
 <!-- Order Form -->
-<section class="order-section">
-  <div class="container">
+<section class="container">
+   <h2>Fill the form</h2>
+  <div class="contact-card">
+  
+    <p>We'd love to provide you our services</p>
 
     <form class="order-form" id="orderForm">
 
@@ -174,6 +180,16 @@
     <p class="success-msg" style="display:none;">
       Order submitted successfully!
     </p>
+<script>
+  const form = document.getElementById('orderForm');
+  form.addEventListener('submit', function(e) {
+    // let your existing handler process the form
+    setTimeout(() => {
+      // Redirect after form handler completes
+      window.location.href = 'thankyou.html';
+    }, 500); // adjust time if needed
+  });
+</script>
 
   </div>
 </section>
