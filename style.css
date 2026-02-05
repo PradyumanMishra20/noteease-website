@@ -79,7 +79,7 @@ header h1 {
   font-size: 1.3rem;
   font-weight: 600;
   position: relative;
-  right: 200px;
+  right: 0px;
   letter-spacing: 1px;
   color: var(--primary);
   background: linear-gradient(90deg, var(--primary), var(--secondary));
@@ -1857,3 +1857,140 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   CLEAN MOBILE FIX (SAFE)
+========================= */
+@media (max-width: 768px) {
+
+  /* Kill manual positioning */
+  [style*="left"],
+  .para,
+  .promotions,
+  .stats h2,
+  .guarantee h2,
+  .writer-cta p {
+    left: 0 !important;
+    right: 0 !important;
+    position: static !important;
+  }
+
+  /* Containers */
+  .container {
+    width: 94%;
+    padding: 0;
+  }
+
+  /* Header */
+  header .container,
+  .header-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  nav a {
+    margin: 6px 10px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 36px 14px;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  /* PROCESS */
+  .process-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .process-step {
+    width: 100%;
+  }
+
+  /* WRITER CTA */
+  .writer-cta {
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px 16px;
+  }
+
+  /* STATS */
+  .stats-flex {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 480px) {
+    .stats-flex {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* GUARANTEE */
+  .guarantee-flex {
+    grid-template-columns: 1fr;
+    margin: 0;
+  }
+
+  /* CARDS */
+  .step,
+  .card,
+  .tier,
+  .writer,
+  .stat-card,
+  .guarantee-card {
+    transform: none !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+
+  /* FORMS */
+  form,
+  .order-form,
+  .contact-card,
+  #cont {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px;
+  }
+
+  /* BUTTONS */
+  .btn,
+  .writer-btn,
+  .order-btn,
+  form button {
+    width: 100%;
+  }
+
+  /* SOCIAL FLOAT */
+  .social-floating {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .social-floating a {
+    padding: 16px;
+  }
+
+  /* PERFORMANCE BOOST */
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.15s !important;
+  }
+}
+
