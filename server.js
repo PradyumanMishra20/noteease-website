@@ -82,6 +82,64 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// =========================
+// AUTO EMAIL SENDER
+// =========================
+const sendAutoReply = async (to, subject, message) => {
+  if (!to) return;
+
+  await transporter.sendMail({
+    from: `"NoteEase Team" <${process.env.GMAIL_USER}>`,
+    to,
+    subject,
+    text: message,
+  });
+};
+
+// =========================
+// AUTO REPLY MESSAGES
+// =========================
+const AUTO_REPLY = {
+  contact: (name) => `
+Hi ${name},
+
+Thank you for contacting NoteEase 💙
+We have received your message and will get back to you shortly.
+
+Stay tuned!
+— NoteEase Team
+`,
+
+  order: (name) => `
+Hi ${name},
+
+Thank you for placing your order with NoteEase 📘✨
+Your order has been received successfully.
+
+Our team will contact you soon.
+— NoteEase Team
+`,
+
+  writer: (name) => `
+Hi ${name},
+
+Thank you for applying as a writer at NoteEase ✍️
+We have received your application and will review it shortly.
+
+We’ll contact you soon if shortlisted.
+— NoteEase Team
+`,
+
+  request: (name) => `
+Hi ${name},
+
+Thank you for reaching out to NoteEase 🙌
+We’ve received your request and will get back to you shortly.
+
+— NoteEase Team
+`,
+};
+
 // -------------------------
 // Routes
 // -------------------------
@@ -111,6 +169,13 @@ app.post("/api/contact", async (req, res) => {
     });
     console.log("✅ Email Sent:", info.messageId);
 
+    await sendAutoReply(
+  email,
+  "✅ We received your message - NoteEase",
+  AUTO_REPLY.contact(name)
+);
+
+
     res.json({ success: true, message: "Message submitted successfully!" });
 
   } catch (err) {
@@ -137,6 +202,13 @@ app.post("/api/writer", upload.single("writing_sample"), async (req, res) => {
       subject: "📝 New Writer Application",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n🎓 Education: ${education}\n💭 Motivation: ${motivation}`,
     });
+
+    await sendAutoReply(
+  email,
+  "✍️ Application Received - NoteEase",
+  AUTO_REPLY.writer(name)
+);
+
 
     res.json({ success: true });
   } catch (err) {
@@ -216,6 +288,13 @@ ${instructions || "None"}
       `,
     });
 
+    await sendAutoReply(
+  student_email,
+  "📘 Order Received - NoteEase",
+  AUTO_REPLY.order(student_name)
+);
+
+
     res.json({
       success: true,
       message: "Order placed successfully! We will contact you soon.",
@@ -247,6 +326,13 @@ app.post("/api/request", async (req, res) => {
       subject: "📦 New NoteEase Request",
       text: `👤 Name: ${name}\n📞 Phone: ${phone}\n 📧 Email: ${email}\n🏠 Address: ${address}\n💬 Message: ${message}`,
     });
+
+    await sendAutoReply(
+  email,
+  "📦 Request Received - NoteEase",
+  AUTO_REPLY.request(name)
+);
+
 
     res.json({ success: true });
   } catch (err) {
