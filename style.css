@@ -75,6 +75,12 @@ header .container {
   right: 20px;
 }
 
+.wpara {
+  text-align: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+
 header h1 {
   font-size: 1.3rem;
   font-weight: 600;
@@ -186,14 +192,13 @@ nav a:focus::after {
   text-align: center;
 }
 
-/* Heading */
 .process-section h2 {
   color: #05204b;
   font-size: 1.6rem;
   margin-bottom: 10px;
 }
 
-/* Description */
+
 .process-desc {
   color: rgba(5, 32, 75);
   max-width: 820px;
@@ -201,7 +206,6 @@ nav a:focus::after {
   line-height: 1.6;
 }
 
-/* Steps Grid */
 .process-steps {
   display: grid;
   grid-auto-flow: column;          
@@ -228,7 +232,6 @@ nav a:focus::after {
 }
 
 
-/* Step Card */
 .process-step {
   background: var(--card);
   color: var(--text);
@@ -246,7 +249,7 @@ nav a:focus::after {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
 }
 
-/* Step Number */
+
 .step-number {
   display: inline-flex;
   align-items: center;
@@ -261,14 +264,12 @@ nav a:focus::after {
   font-size: 0.95rem;
 }
 
-/* Step Title */
 .process-step h3 {
   font-size: 1.05rem;
   color: #05204b;
   margin-bottom: 6px;
 }
 
-/* Step Text */
 .process-step p {
   font-size: 0.95rem;
   color: #475569;
@@ -345,7 +346,6 @@ form {
   background-clip: padding-box;
 }
 
-/* Gradient sweep */
 .step::before,
 .why-card::before,
 .promise-card::before,
@@ -393,7 +393,6 @@ form:hover::before {
   }
 }
 
-/* Hover lift */
 .step:hover,
 .why-card:hover,
 .promise-card:hover,
@@ -543,14 +542,12 @@ form .field:focus-within label {
   text-align: center;
 }
 
-/* Heading */
 #who-is-this-for h2 {
   color: #05204b;
   font-size: 1.6rem;
   margin-bottom: 10px;
 }
 
-/* Description */
 #who-is-this-for > .container > p {
   color: rgba(5, 32, 75);
   max-width: 820px;
@@ -558,14 +555,12 @@ form .field:focus-within label {
   line-height: 1.6;
 }
 
-/* Grid */
 #who-is-this-for .steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
-/* Card */
 #who-is-this-for .step {
   background: var(--card);
   color: var(--text);
@@ -575,13 +570,11 @@ form .field:focus-within label {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Hover */
 #who-is-this-for .step:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
 }
 
-/* Icon */
 #who-is-this-for .step i {
   font-size: 1.6rem;
   margin-bottom: 12px;
@@ -594,14 +587,12 @@ form .field:focus-within label {
   -webkit-text-fill-color: transparent;
 }
 
-/* Title */
 #who-is-this-for .step h3 {
   font-size: 1.05rem;
   color: #05204b;
   margin-bottom: 6px;
 }
 
-/* Text */
 #who-is-this-for .step p {
   font-size: 0.95rem;
   color: #475569;
@@ -613,16 +604,10 @@ form .field:focus-within label {
   background: #ffffff;
   padding: 28px;
   border-radius: 16px;
-
-  /* soft elevation */
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.08),
     0 2px 6px rgba(0, 0, 0, 0.04);
-
-  /* subtle border for light bg */
   border: 1px solid rgba(0, 0, 0, 0.06);
-
-  /* smooth motion */
   transition: 
     transform 0.35s cubic-bezier(.22,1,.36,1),
     box-shadow 0.35s ease;
@@ -630,7 +615,6 @@ form .field:focus-within label {
   margin: 40px auto;
 }
 
-/* hover lift */
 #cont:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow:
@@ -830,7 +814,6 @@ section p {
   top: 40px;
 }
 
-/* Order Form Card */
 .order-form {
   width: 100%;
   max-width: 700px;
@@ -843,7 +826,6 @@ section p {
   animation: fadeInUp 0.8s forwards;
 }
 
-/* Form Groups */
 .order-form .form-group {
   margin-bottom: 18px;
 }
@@ -856,7 +838,6 @@ section p {
   margin-bottom: 6px;
 }
 
-/* Inputs */
 .order-form input,
 .order-form select,
 .order-form textarea {
@@ -872,7 +853,6 @@ section p {
   resize: vertical;
 }
 
-/* Focus State */
 .order-form input:focus,
 .order-form select:focus,
 .order-form textarea:focus {
@@ -881,7 +861,6 @@ section p {
   outline: none;
 }
 
-/* Submit Button */
 .order-btn {
   width: 100%;
   margin-top: 10px;
@@ -903,7 +882,6 @@ section p {
   outline: none;
 }
 
-/* Trust Text */
 .form-trust {
   font-size: 0.8rem;
   color: #64748b;
@@ -911,7 +889,6 @@ section p {
   margin: 16px 0 6px;
 }
 
-/* Success Message */
 .success-msg {
   text-align: center;
   margin-top: 16px;
@@ -958,7 +935,6 @@ form {
   --focus-glow: rgba(255, 77, 109, 0.35);
 }
 
-/* Base animation */
 form input,
 form textarea,
 form select {
@@ -979,7 +955,6 @@ form select {
     background 0.3s ease;
 }
 
-/* Hover — subtle lift */
 form input:hover,
 form textarea:hover,
 form select:hover {
@@ -989,7 +964,6 @@ form select:hover {
     0 8px 22px rgba(15, 23, 42, 0.12);
 }
 
-/* Focus — glow + elevation */
 form input:focus,
 form textarea:focus,
 form select:focus {
@@ -1002,7 +976,6 @@ form select:focus {
     0 14px 36px rgba(15, 23, 42, 0.18);
 }
 
-/* Placeholder animation */
 form input::placeholder,
 form textarea::placeholder {
   color: #94a3b8;
@@ -1015,7 +988,6 @@ form textarea:focus::placeholder {
   transform: translateX(6px);
 }
 
-/* Textarea tweak */
 form textarea {
   min-height: 130px;
   resize: vertical;
@@ -1080,7 +1052,6 @@ form label {
     letter-spacing 0.25s ease;
 }
 
-/* Label reacts when input is focused */
 form input:focus + label,
 form textarea:focus + label,
 form select:focus + label {
@@ -1100,7 +1071,6 @@ form label {
     letter-spacing 0.25s ease;
 }
 
-/* When input inside same wrapper is focused */
 form .field:focus-within label {
   color: var(--primary);
   letter-spacing: 0.4px;
@@ -1174,7 +1144,7 @@ form .field:focus-within label {
 
 .writer {
   background: #fff;
-  padding: 2rem;
+  padding: 0.2rem;
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   text-align: center;
@@ -1190,11 +1160,6 @@ form .field:focus-within label {
 .writer i {
   font-size: 3rem;
   color: #4a90e2;
-  margin-bottom: 1rem;
-}
-
-.writer h3 {
-  margin: 0.5rem 0;
 }
 
 .writer p {
@@ -1265,7 +1230,7 @@ form .field:focus-within label {
    Promotions / Offers
 --------------------------- */
 .promotions {
-  background: #fdf6f0; /* matching main bg */
+  background: #fdf6f0; 
   padding: 30px 0;
   text-align: center;
   border-radius: var(--radius);
@@ -1294,20 +1259,20 @@ form .field:focus-within label {
 --------------------------- */
 .faq {
   padding: 50px 0;
-  background: #fdf6f0; /* matching main bg */
+  background: #fdf6f0;
 }
 
 .faq h2 {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   font-size: 2rem;
 }
 
 .faq-item {
   background: var(--card);
-  padding: 20px;
+  padding: 10px;
   border-radius: var(--radius);
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -1319,7 +1284,8 @@ form .field:focus-within label {
 
 .faq-item h3 {
   font-size: 1.2rem;
-  margin-bottom: 8px;
+  margin-bottom: 1px;
+  margin-top: -1rem;
 }
 
 .faq-item p {
@@ -1331,7 +1297,7 @@ form .field:focus-within label {
    Statistics / Counter Section
 --------------------------- */
 .stats {
-  background: #fdf6f0; /* matching main bg */
+  background: #fdf6f0; 
   padding: 60px 0;
 }
 
@@ -1382,17 +1348,55 @@ form .field:focus-within label {
   color: #555;
 }
 
+/* DATE INPUT STYLING */
+input[type="date"] {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 10px;
+  border: 1.5px solid #d1d5db;
+  background-color: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Hover effect */
+input[type="date"]:hover {
+  border-color: #6366f1;
+  background-color: #f9fafb;
+}
+
+/* Focus state */
+input[type="date"]:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+/* Calendar icon styling (Chrome / Edge) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(35%);
+  cursor: pointer;
+  opacity: 0.9;
+  padding-left: 8px;
+}
+
+/* Disabled / invalid feel */
+input[type="date"]:invalid {
+  color: #9ca3af;
+}
+
+
 /* -------------------------
    Secure Payment / Guarantee Section
 --------------------------- */
 .guarantee {
-  background: #fdf6f0; /* matching main bg */
-  padding: 50px 0;
+  background: #fdf6f0;
 }
 
 .guarantee-flex {
-  display: flex;
-  justify-content: space-around;
   text-align: center;
   flex-wrap: wrap;
   gap: 30px;
@@ -1401,17 +1405,22 @@ form .field:focus-within label {
 
 .guarantee-item {
   background: var(--card);
-  padding: 25px 20px;
   border-radius: var(--radius);
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   flex: 1 1 200px;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
+.guarantee-item {
+  flex: 1 1 360px;     /* bigger base size */
+  max-width: 420px;   /* allow wider cards */
+  padding: 32px 28px; /* more breathing room */
+}
+
+
 .guarantee-item i {
   font-size: 2.5rem;
   color: var(--primary);
-  margin-bottom: 10px;
 }
 
 .guarantee-item p {
@@ -1427,10 +1436,6 @@ form .field:focus-within label {
 
 .guarantee h2 {
   text-align: center;
-  margin-bottom: 20px;
-  position: relative;
-  left: 600px;
-  bottom: 50px;
 }
 
 /* -------------------------
@@ -1640,7 +1645,7 @@ footer {
 .social-floating a {
   background: var(--primary);
   color: #fff;
-  padding: 30px;
+  padding: 18px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -1671,20 +1676,16 @@ footer {
    RESPONSIVE PATCH – SAFE OVERRIDES
    (Do NOT edit existing CSS above)
 ========================================= */
-
-/* Global safety */
 html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
 
-/* Prevent fixed widths from breaking layout */
 img, video, iframe {
   max-width: 100%;
   height: auto;
 }
 
-/* Header fixes (logo + title alignment) */
 header .container {
   justify-content: center;
   gap: 12px;
@@ -1699,7 +1700,6 @@ header img {
   position: static !important;
 }
 
-/* Sections that were pushed left/right */
 .stats h2,
 .guarantee h2,
 .container .para,
@@ -1710,7 +1710,6 @@ header img {
   text-align: center;
 }
 
-/* Promotions section centering */
 .promotions {
   position: static !important;
   left: auto !important;
@@ -1719,14 +1718,12 @@ header img {
   margin: 20px auto !important;
 }
 
-/* Guarantee + stats grid alignment */
 .stats-flex,
 .guarantee-flex {
   justify-content: center !important;
   margin-left: 0 !important;
 }
 
-/* Cards never overflow */
 .step,
 .card,
 .writer,
@@ -1737,7 +1734,6 @@ header img {
   max-width: 100%;
 }
 
-/* Forms scale properly */
 #cont,
 .contact-card,
 .order-form,
@@ -1748,7 +1744,6 @@ form {
   margin-right: auto;
 }
 
-/* Process steps overflow safety */
 .process-steps {
   margin-left: 0 !important;
   padding-left: 12px;
@@ -1836,7 +1831,6 @@ form {
    (Responsive Safe Override)
 ========================= */
 
-/* Reset heading alignment */
 .stats h2,
 .guarantee h2 {
   position: static !important;
@@ -1846,19 +1840,16 @@ form {
   margin: 0 auto 20px;
 }
 
-/* Center stat cards */
 .stats-flex {
   justify-content: center !important;
   margin-left: 0 !important;
 }
 
-/* Center guarantee cards */
 .guarantee-flex {
   justify-content: center !important;
   margin-left: 0 !important;
 }
 
-/* Ensure cards don’t stretch weirdly */
 .stats .stat,
 .guarantee-item {
   max-width: 320px;
@@ -1876,7 +1867,6 @@ form {
    (Desktop + Mobile)
 ===================================== */
 
-/* Force sections to behave as centered blocks */
 .stats,
 .guarantee {
   display: flex;
@@ -1884,7 +1874,6 @@ form {
   align-items: center;
 }
 
-/* Fix headings */
 .stats h2,
 .guarantee h2 {
   position: static !important;
@@ -1895,7 +1884,6 @@ form {
   width: 100%;
 }
 
-/* Center card containers */
 .stats-flex,
 .guarantee-flex {
   display: flex;
@@ -1909,7 +1897,6 @@ form {
   padding: 0 16px;
 }
 
-/* Normalize card width */
 .stats .stat,
 .guarantee-item {
   flex: 1 1 240px;
@@ -1968,7 +1955,6 @@ form {
     margin-left: auto; /* pushes nav to the right */
   }
 
-  /* kill artificial positioning */
   header img,
   header h1 {
     position: static !important;
@@ -1986,7 +1972,6 @@ header img {
   margin: 0 !important;
 }
 
-/* tighten spacing just a bit */
 header .container {
   gap: 6px;
 }
@@ -1994,9 +1979,6 @@ header .container {
 /* ==================================
    Remove double / triple form boxes
 ================================== */
-
-/* Forms should NOT create their own card
-   when already inside a card container */
 #writerForm,
 #requestForm {
   background: transparent !important;
@@ -2009,7 +1991,6 @@ header .container {
    (NO layout break, NO animation loss)
 ====================================== */
 
-/* Reset weird browser + animation effects */
 input[type="file"],
 input[type="date"] {
   background: #fff !important;
@@ -2021,7 +2002,6 @@ input[type="date"] {
   width: 100%;
 }
 
-/* Prevent hover/focus animations */
 input[type="file"]:hover,
 input[type="file"]:focus,
 input[type="date"]:hover,
@@ -2031,7 +2011,6 @@ input[type="date"]:focus {
   outline: none;
 }
 
-/* Fix file button (Chrome / Edge) */
 input[type="file"]::file-selector-button {
   background: var(--primary);
   color: #fff;
@@ -2041,7 +2020,6 @@ input[type="file"]::file-selector-button {
   cursor: pointer;
 }
 
-/* Firefox compatibility */
 input[type="file"]::-webkit-file-upload-button {
   background: var(--primary);
   color: #fff;
