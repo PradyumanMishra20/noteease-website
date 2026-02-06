@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  
 </head>
 <body>
 
@@ -82,27 +83,53 @@
       <h2>Have Questions?</h2>
       <p>If you have any questions about our pricing or services, feel free to reach out!</p>
       <a class="btn writer-btn" href="contact.html#contact-section" >Contact Us</a>
+  </div>
+</section>
+
 <section class="faq" data-aos="fade-up" style="border-radius: 12px; margin-top: 20px; max-height: 700px;">
-  <div class="container" style="max-width: 100%;">
+  <div class="container" style="max-width: 80%;">
     <h2 style="margin-top: -2rem;">Frequently Asked Questions</h2>
+
     <div class="faq-item">
-      <h3>How do I place an order?</h3>
-      <p>Simply go to the Order page, fill in your requirements, and submit. We'll contact you for confirmation.</p>
+      <button class="faq-question">
+        <span>How do I place an order?</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Simply go to the Order page, fill in your requirements, and submit. We'll contact you for confirmation.</p>
+      </div>
     </div>
+
     <div class="faq-item">
-      <h3>Can I request custom formatting?</h3>
-      <p>Yes! We can provide Word, PDF, or Google Docs as per your preference.</p>
+      <button class="faq-question">
+        <span>Can I request custom formatting?</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes! We can provide Word, PDF, or Google Docs as per your preference.</p>
+      </div>
     </div>
+
     <div class="faq-item">
-      <h3>What if I need revisions?</h3>
-      <p>We offer free revisions within 2 days of delivery to ensure your satisfaction.</p>
+      <button class="faq-question">
+        <span>What if I need revisions?</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>We offer free revisions within 2 days of delivery to ensure your satisfaction.</p>
+      </div>
     </div>
+
     <div class="faq-item">
-      <h3>How is payment handled?</h3>
-      <p>We accept secure online payments via UPI, PayPal, or card. No hidden charges.</p>
+      <button class="faq-question">
+        <span>How is payment handled?</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>We accept secure online payments via UPI, PayPal, or card. No hidden charges.</p>
+      </div>
     </div>
-     </div>
-  </section>
+
   </div>
 </section>
 
@@ -172,6 +199,16 @@
     <i class="fab fa-whatsapp"></i>
   </a>
 </div>
+
+<script>
+  document.querySelectorAll(".faq-item").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("active");
+    });
+  });
+</script>
+
+
 
 </body>
 </html>
