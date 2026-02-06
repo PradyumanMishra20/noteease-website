@@ -1264,33 +1264,74 @@ form .field:focus-within label {
 
 .faq h2 {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   font-size: 2rem;
 }
 
+/* FAQ Item */
 .faq-item {
   background: var(--card);
-  padding: 10px;
   border-radius: var(--radius);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  transition: transform 0.3s, box-shadow 0.3s;
+  padding: 20px 24px;
+  max-width: 80%;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.faq-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+/* Question row */
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #05204b;
+  cursor: pointer;
+  text-align: left;
 }
 
-.faq-item h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1px;
-  margin-top: -1rem;
+/* Question text */
+.faq-question h3 {
+  font-size: 1.1rem;
+  margin: 0;
+  text-align: left;
 }
 
-.faq-item p {
+/* Arrow */
+.faq-question .arrow {
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+/* Answer (accordion) */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.faq-answer p {
   font-size: 1rem;
   color: #555;
+  text-align: left;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+/* Active state */
+.faq-item.active .faq-answer {
+  max-height: 200px;
+}
+
+.faq-item.active .arrow {
+  transform: rotate(180deg);
 }
 
 /* -------------------------
