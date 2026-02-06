@@ -15,11 +15,11 @@
   <div class="container">
      <img src="./logo.png" alt="NoteEase Logo"><h1>– Effortless Notes for Every Student</h1>
     <nav>
-      <a href="index.html">Home</a>
+     <a href="index.html">Home</a>
       <a href="writers.html">Writers</a>
       <a href="pricing.html">Pricing</a>
+       <a href="order.html">Order</a>
       <a href="contact.html">Contact</a>
-      <a href="order.html">Order</a>
     </nav>
   </div>
 </header>
@@ -32,7 +32,7 @@
       Provide clear details so our writers can prepare accurate,
       well-structured notes for you.
     </p>
-    <a class="btn primary" href="#orderForm" style="position: relative; left: 10px;">Place Your Order <i class="fas fa-arrow-right"></i></a>
+    <a class="btn primary" href="#contact-section" style="position: relative; left: 10px;">Place Your Order <i class="fas fa-arrow-right"></i></a>
   </div>
 </section>
 
@@ -93,13 +93,25 @@
   </div>
 </section>
 
+<section class="writer-cta">
+    <div class="container">
+      <h2>Want to place a order?</h2>
+      <p>Please go through our writer's page and pricing page before placing your order.Thanks!!</p>
+      <a class="btn writer-btn" href="writers.html" style="max-width: 40%;">Writers</a>
+       <a class="btn writer-btn" href="pricing.html" style="max-width: 40%;">Pricing</a>
+    </div>
+  </section>
+
+
 
 <!-- Order Form -->
+ <div id="contact-section"></div>
 <section class="container">
    <h2>Fill the form</h2>
   <div class="contact-card">
   
     <p>We'd love to provide you our services</p>
+     <div id="contact-section"></div>
 
     <form class="order-form" id="orderForm">
 
@@ -118,7 +130,7 @@
       <div class="form-group">
         <label for="studentPhone">Phone Number</label>
         <input type="tel" id="studentPhone" name="student_phone"
-               placeholder="Enter your phone number" required>
+               placeholder="Enter your phone number" maxlength="10" required>
       </div>
 
       <div class="form-group">
@@ -170,7 +182,7 @@
       </div>
 
       <p class="form-trust">
-        Please verify all details before submitting your order.
+        Please verify all details and fill all the fields before submitting your order.
       </p>
 
       <button type="submit" class="order-btn">Submit Order</button>
@@ -200,6 +212,7 @@
     <p>&copy; 2025 NoteEase. All rights reserved.</p>
     <div class="footer-links">
       <a href="index.html">Home</a>
+      <a href="order.html">Order</a>
       <a href="writers.html">Writers</a>
       <a href="pricing.html">Pricing</a>
       <a href="contact.html">Contact</a>
@@ -214,6 +227,15 @@
   </a>
 </div>
 <script src="form-handler.js"></script>
+<script src="formValidation.js"></script>
+<script>
+  document.addEventListener("click", function (e) {
+    if (e.target.type === "date") {
+      e.target.showPicker();
+    }
+  });
+</script>
+
 
 
 </body>
