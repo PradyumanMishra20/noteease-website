@@ -7,6 +7,18 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+  <style>
+    #cont a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+#cont a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+  </style>
 </head>
 <body>
 
@@ -15,11 +27,11 @@
     <div class="container">
       <img src="./logo.png" alt="NoteEase Logo"><h1>– Effortless Notes for Every Student</h1>
       <nav>
-        <a href="index.html">Home</a>
-        <a href="writers.html">Writers</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html" class="active">Contact</a>
-        <a href="order.html">Order</a>
+       <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+       <a href="order.html">Order</a>
+      <a href="contact.html">Contact</a>
       </nav>
     </div>
   </header>
@@ -29,6 +41,7 @@
     <div class="container">
       <h2>Contact Us</h2>
       <p>Questions? Suggestions? Reach out to us anytime.</p>
+     <a class="btn primary" href="contact.html#contact-section">Contact Us <i class="fas fa-arrow-right"></i></a>
     </div>
   </section>
 
@@ -36,20 +49,74 @@
   
 
       <!-- INFO CARD -->
-    <section id="who-is-this-for">
+    <section id="who-is-this-for" style="max-height: 450px;">
        <h2>Contact Info</h2>
+       <p class="process-desc">You can reach out to us through email, phone, or social platforms anytime.</p>
       <div class="container" data-aos="fade-right">
        <div id="cont">
-        <p><i class="fas fa-envelope"></i> noteeaseofficial@gmail.com</p>
-        <p><i class="fas fa-phone"></i> +91 8454894108 / +91 9594438819</p>
-        <p><i class="fas fa-map-marker-alt"></i> India</p>
-        <p class="hint">For faster responses, ping us on WhatsApp!</p>
+        <p>
+  <i class="fas fa-envelope"></i>
+  <a href="mailto:noteeaseofficial@gmail.com">
+    noteeaseofficial@gmail.com
+  </a>
+</p>
+
+<p>
+  <i class="fas fa-phone"></i>
+  <a href="tel:+918454894108">+91 8454894108</a> /
+  <a href="tel:+919594438819">+91 9594438819</a>
+</p>
+
+<p>
+  <i class="fas fa-map-marker-alt"></i>
+  <a href="https://www.google.com/maps/search/?api=1&query=India" target="_blank">
+    India
+  </a>
+</p>
+
+<p class="hint">
+  <i class="fab fa-whatsapp"></i>
+  <a href="https://wa.me/918454894108" target="_blank">
+    Ping us on WhatsApp for faster responses!
+  </a>
+</p>
+
        </div>
       </div>
     </section>
 
-<section class="order-section">
+    <section class="writer-cta">
+  <div class="container">
+    <h2>Connect With Us Directly</h2>
+    <p>
+      Choose your preferred platform and contact NoteEase instantly.
+      We usually respond super fast 🚀
+    </p>
+
+    <div class="contact-actions">
+      <a class="btn writer-btn" href="mailto:noteeaseofficial@gmail.com" style="max-width: 20%;">
+        <i class="fas fa-envelope"></i> Gmail
+      </a>
+
+      <a class="btn writer-btn" href="https://wa.me/918454894108" target="_blank" style="max-width: 20%;" >
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+
+      <a class="btn writer-btn" href="https://instagram.com/noteease" target="_blank" style="max-width: 20%;">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+
+      <a class="btn writer-btn" href="tel:+918454894108" style="max-width: 20%;">
+        <i class="fas fa-phone"></i> Call Us
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<section class="order-section" style="margin-top: -30px;">
     <div class="container contact-grid">
+      <div id="contact-section"></div>
       <!-- FORM CARD -->
       <div class="contact-card" data-aos="fade-left">
         <h3 style="text-align: center;">Send a Message</h3>
@@ -57,6 +124,9 @@
   <input type="text" id="contactName" name="name" placeholder="Your Name" required />
   <input type="email" id="contactEmail" name="email" placeholder="Your Email" required />
   <textarea id="contactMessage" name="message" rows="5" placeholder="Your Message" required></textarea>
+  <p class="form-trust">
+        Please fill all the fields before submitting the form.
+      </p>
   <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Send</button>
 </form>
 <p id="contactFormConfirm" class="success-msg" style="display:none;">Message sent successfully!</p>
@@ -72,6 +142,7 @@
       <p>&copy; 2025 NoteEase. All rights reserved.</p>
       <div class="footer-links">
         <a href="index.html">Home</a>
+        <a href="order.html">Order</a>
         <a href="writers.html">Writers</a>
         <a href="pricing.html">Pricing</a>
         <a href="contact.html">Contact</a>
@@ -88,6 +159,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="script.js"></script>
 <script src="form-handler.js" defer></script>
+<script src="formValidation.js"></script>
+
 
 
 </body>
