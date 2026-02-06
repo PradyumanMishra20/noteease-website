@@ -20,11 +20,11 @@
     <div class="container">
       <img src="./logo.png" alt="NoteEase Logo"><h1>– Effortless Notes for Every Student</h1>
       <nav>
-         <a href="index.html" class="active">Home</a>
-        <a href="writers.html">Writers</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a href="order.html">Order</a>
+        <a href="index.html">Home</a>
+      <a href="writers.html">Writers</a>
+      <a href="pricing.html">Pricing</a>
+       <a href="order.html">Order</a>
+      <a href="contact.html">Contact</a>
       </nav>
     </div>
   </header>
@@ -34,7 +34,7 @@
     <div class="container">
       <h1>Get Your Notes Written by Experts — Stress Free</h1>
       <p>Upload handwritten notes or bring them to us. We type, format, print and deliver — you pay only after delivery.</p>
-      <a class="btn primary" href="order.html#orderForm">Place Your Order <i class="fas fa-arrow-right"></i></a>
+      <a class="btn primary" href="order.html#contact-section">Place Your Order <i class="fas fa-arrow-right"></i></a>
       <a class="btn secondary" href="#how-it-works">How It Works</a>
     </div>
   </section>
@@ -78,7 +78,7 @@
     <div class="container">
       <h2>Want to Join Our Team?</h2>
       <p>Become a writer for NoteEase and help students with high-quality notes.</p>
-      <a class="btn writer-btn" href="writers.html#writerForm">Apply Now</a>
+      <a class="btn writer-btn" href="writers.html#contact-section">Apply Now</a>
     </div>
   </section>
 
@@ -148,12 +148,16 @@
        
     <p>We’d love to hear your feedback to improve our services.</p>
       <div class="contact-card">
+         <div id="contact-section"></div>
         <form id="requestForm">
   <input type="text" id="requestName" name="name" placeholder="Your Name" required />
   <input type="tel" id="requestPhone" name="phone" placeholder="Phone Number" required />
   <input type="email" id="requestEmail" name="email" placeholder="Your Email" required />
   <input type="text" id="requestAddress" name="address" placeholder="College / Address" required />
   <textarea id="requestMessage" name="message" rows="4" placeholder="Write your feedback here..."></textarea>
+   <p class="form-trust">
+        Please fill all the fields before submitting the form.
+      </p>
   <button type="submit">Submit Request</button>
 </form>
 <p id="requestFormConfirm" class="success-msg" style="display:none;">Request submitted successfully!</p>
@@ -170,6 +174,7 @@
       <p>&#169; 2025 NoteEase — All rights reserved.</p>
       <div class="footer-links">
        <a href="index.html">Home</a>
+       <a href="order.html">Order</a>
        <a href="writers.html">Writers</a> 
        <a href="pricing.html">Pricing</a> 
        <a href="contact.html">Contact</a>
@@ -184,7 +189,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="script.js"></script>
 <script src="form-handler.js" defer></script>
-
+<script src="formValidation.js"></script>
 
 </body>
 </html>
