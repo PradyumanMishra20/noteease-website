@@ -1,200 +1,222 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("📡 form-handler.js loaded and active!");
+  // Enhanced validation patterns
+  const VALIDATION_PATTERNS = {
+    name: /^[a-zA-Z\s.'-]{2,50}$/,
+    email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    phone: /^[6-9]\d{9}$/,
+    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    pincode: /^[1-9]\d{5}$/,
+    url: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+    username: /^[a-zA-Z0-9_]{4,20}$/
+  };
 
-  const BASE_URL = "http://localhost:3000";
+  // Custom validation messages
+  const VALIDATION_MESSAGES = {
+    required: field => `${field} is required`,
+    invalid: (field, type) => {
+      const messages = {
+        name: 'Name should contain 2-50 letters, spaces, hyphens, and apostrophes only',
+        email: 'Please enter a valid email address',
+        phone: 'Please enter a valid 10-digit phone number starting with 6-9',
+        password: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character',
+        pincode: 'Please enter a valid 6-digit pincode',
+        url: 'Please enter a valid URL',
+        username: 'Username must be 4-20 characters long and can only contain letters, numbers, and underscores'
+      };
+      return messages[type] || `Please enter a valid ${field}`;
+    },
+    minLength: (field, min) => `${field} must be at least ${min} characters long`,
+    maxLength: (field, max) => `${field} cannot exceed ${max} characters`,
+    minValue: (field, min) => `${field} must be at least ${min}`,
+    maxValue: (field, max) => `${field} cannot be greater than ${max}`,
+    fileType: types => `Invalid file type. Allowed: ${types.join(', ')}`,
+    futureDate: field => `${field} cannot be in the past`
+  };
 
-  // -------------------------
-  // Generic JSON form submit helper
-  // -------------------------
-  async function submitForm(event, endpoint, fieldIds, isFormData = false) {
-    event.preventDefault();
-    const form = event.target;
+  // Show error message
+  function showError(input, message) {
+    removeError(input);
+    input.classList.add('error');
+    const errorElement = document.createElement('div');
+    errorElement.className = 'error-message';
+    errorElement.textContent = message;
+    errorElement.style.color = '#ff4d6d';
+    errorElement.style.fontSize = '0.8rem';
+    errorElement.style.marginTop = '4px';
+    input.parentNode.insertBefore(errorElement, input.nextSibling);
+    input.focus();
+  }
 
-    let body;
-    let headers = {};
+  // Remove error
+  function removeError(input) {
+    input.classList.remove('error');
+    const errorElement = input.parentNode.querySelector('.error-message');
+    if (errorElement) errorElement.remove();
+  }
 
-    if (isFormData) {
-      // Use FormData (for writer form with file upload)
-      body = new FormData();
-      for (const [key, id] of Object.entries(fieldIds)) {
-        const el = document.getElementById(id);
-        if (el && el.value) body.append(key, el.value.trim());
-      }
-      // Add file if exists
-      const fileInput = form.querySelector('input[type="file"]');
-      if (fileInput && fileInput.files[0]) {
-        body.append(fileInput.name, fileInput.files[0]);
-      }
-    } else {
-      // Use JSON
-      body = {};
-      for (const [key, id] of Object.entries(fieldIds)) {
-        const el = document.getElementById(id);
-        body[key] = el ? el.value.trim() : "";
-      }
-      headers["Content-Type"] = "application/json";
+  // Validate individual field
+  function validateField(input) {
+    const value = input.value.trim();
+    const type = input.dataset.validate || input.type;
+    const required = input.hasAttribute('required');
+    removeError(input);
+
+    if (required && !value) {
+      showError(input, VALIDATION_MESSAGES.required(input.placeholder || input.name));
+      return false;
+    }
+    if (!value && !required) return true;
+
+    switch (type) {
+      case 'text':
+        if (input.dataset.pattern && !new RegExp(input.dataset.pattern).test(value)) {
+          showError(input, input.dataset.message || 'Invalid format');
+          return false;
+        }
+        if (input.name.toLowerCase().includes('name') && !VALIDATION_PATTERNS.name.test(value)) {
+          showError(input, VALIDATION_MESSAGES.invalid('Name', 'name'));
+          return false;
+        }
+        break;
+      case 'email':
+        if (!VALIDATION_PATTERNS.email.test(value)) {
+          showError(input, VALIDATION_MESSAGES.invalid('Email', 'email'));
+          return false;
+        }
+        break;
+      case 'tel':
+        if (!VALIDATION_PATTERNS.phone.test(value)) {
+          showError(input, VALIDATION_MESSAGES.invalid('Phone', 'phone'));
+          return false;
+        }
+        break;
+      case 'password':
+        if (!VALIDATION_PATTERNS.password.test(value)) {
+          showError(input, VALIDATION_MESSAGES.invalid('Password', 'password'));
+          return false;
+        }
+        break;
+      case 'url':
+        if (!VALIDATION_PATTERNS.url.test(value)) {
+          showError(input, VALIDATION_MESSAGES.invalid('URL', 'url'));
+          return false;
+        }
+        break;
+      case 'date':
+        const selectedDate = new Date(value);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        if (input.hasAttribute('data-future-date') && selectedDate < today) {
+          showError(input, VALIDATION_MESSAGES.futureDate(input.placeholder || 'Date'));
+          return false;
+        }
+        break;
+      case 'file':
+        if (input.files.length > 0) {
+          const allowedTypes = input.dataset.fileTypes ? input.dataset.fileTypes.split(',').map(t => t.trim().toLowerCase()) : ['pdf','doc','docx','txt'];
+          const fileExt = input.files[0].name.split('.').pop().toLowerCase();
+          if (!allowedTypes.includes(fileExt)) {
+            showError(input, VALIDATION_MESSAGES.fileType(allowedTypes));
+            input.value = '';
+            return false;
+          }
+        }
+        break;
+      case 'number':
+        const num = parseFloat(value);
+        if (isNaN(num)) {
+          showError(input, 'Please enter a valid number');
+          return false;
+        }
+        if (input.hasAttribute('min') && num < parseFloat(input.min)) {
+          showError(input, VALIDATION_MESSAGES.minValue(input.placeholder || 'Value', input.min));
+          return false;
+        }
+        if (input.hasAttribute('max') && num > parseFloat(input.max)) {
+          showError(input, VALIDATION_MESSAGES.maxValue(input.placeholder || 'Value', input.max));
+          return false;
+        }
+        break;
+      case 'select-one':
+        if (required && value === '') {
+          showError(input, `Please select a ${input.name || 'value'}`);
+          return false;
+        }
+        break;
+      case 'textarea':
+        if (required && value.length < 10) {
+          showError(input, VALIDATION_MESSAGES.minLength('Message', 10));
+          return false;
+        }
+        break;
     }
 
-    console.log("📦 Sending Data to", endpoint, body);
-
-    try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers,
-        body: isFormData ? body : JSON.stringify(body),
-      });
-
-      const result = await res.json();
-      console.log("✅ Server Response:", result);
-
-      alert(result.message || "Form submitted successfully! We will contact you asap!");
-      form.reset();
-
-      // Show success message
-      const confirmMsg = form.nextElementSibling;
-      if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
-        confirmMsg.style.display = "block";
-        setTimeout(() => (confirmMsg.style.display = "none"), 4000);
-      }
-
-    } catch (err) {
-      console.error("❌ Form submission error:", err);
-      alert(
-        "Server error while submitting the form! Please try again later or contact us via WhatsApp."
-      );
+    if (input.hasAttribute('minlength') && value.length < parseInt(input.minLength)) {
+      showError(input, VALIDATION_MESSAGES.minLength(input.placeholder || 'Field', input.minLength));
+      return false;
     }
+    if (input.hasAttribute('maxlength') && value.length > parseInt(input.maxLength)) {
+      showError(input, VALIDATION_MESSAGES.maxLength(input.placeholder || 'Field', input.maxLength));
+      return false;
+    }
+
+    return true;
   }
 
-  // -------------------------
-  // Contact Form
-  // -------------------------
-  const contactForm = document.getElementById("contactForm");
-  if (contactForm) {
-    contactForm.addEventListener("submit", (e) =>
-      submitForm(e, `${BASE_URL}/api/contact`, {
-        name: "contactName",
-        email: "contactEmail",
-        message: "contactMessage",
-      })
-    );
-    console.log("✅ contactForm active");
+  // Validate entire form
+  function validateForm(form) {
+    let isValid = true;
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => { if (!validateField(input)) isValid = false; });
+    return isValid;
   }
 
-  // -------------------------
-  // Writer Form
-  // -------------------------
-  const writerForm = document.getElementById("writerForm");
-  if (writerForm) {
-    writerForm.addEventListener("submit", (e) =>
-      submitForm(
-        e,
-        `${BASE_URL}/api/writer`,
-        {
-          name: "writerName",
-          email: "writerEmail",
-          phone: "writerPhone",
-          education: "writerEducation",
-          motivation: "writerMotivation",
-        },
-        true // use FormData because of file
-      )
-    );
-    console.log("✅ writerForm active");
-  }
+  // Initialize forms
+  const forms = ['writerForm','contactForm','orderForm','requestForm'].map(id => document.getElementById(id));
 
-  // -------------------------
-// Order Form
-// -------------------------
-const orderForm = document.getElementById("orderForm");
+  forms.forEach(form => {
+    if (!form) return;
+    form.setAttribute('novalidate','');
 
-if (orderForm) {
-  orderForm.addEventListener("submit", async (e) => {
+    const inputs = form.querySelectorAll('input, select, textarea');
+
+    inputs.forEach(input => {
+      if (input.type !== 'file') {
+        input.addEventListener('input', () => {
+          input.value.trim() ? validateField(input) : removeError(input);
+        });
+      }
+      input.addEventListener('blur', () => validateField(input));
+    });
+
+    form.addEventListener('submit', e => {
+  if (!validateForm(form)) {
     e.preventDefault();
+    return;
+  }
+});
 
-    const data = {
-      student_name: document.getElementById("studentName").value.trim(),
-      student_email: document.getElementById("studentEmail").value.trim(),
-      student_phone: document.getElementById("studentPhone").value.trim(),
-      subject: document.getElementById("subject").value,
-      topic: document.getElementById("topic").value.trim(),
-      notes_type: document.getElementById("notesType").value,
-      pages: document.getElementById("pages").value,
-      deadline: document.getElementById("deadline").value,
-      instructions: document.getElementById("instructions").value.trim(),
-    };
-
-    try {
-      const res = await fetch(`${BASE_URL}/api/order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      alert(result.message || "Order submitted successfully!");
-      orderForm.reset();
-
-      const successMsg = document.querySelector(".success-msg");
-      if (successMsg) {
-        successMsg.style.display = "block";
-        setTimeout(() => (successMsg.style.display = "none"), 4000);
-      }
-
-    } catch (err) {
-      console.error("❌ Order submit error:", err);
-      alert("Server error! Please try again later.");
-    }
   });
 
-  console.log("✅ orderForm active");
-}
-
-
-  // -------------------------
-  // Request Form
-  // -------------------------
-  const requestForm = document.getElementById("requestForm");
-  if (requestForm) {
-    requestForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const params = new URLSearchParams();
-      const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-      };
-      params.append("name", getVal("requestName"));
-       params.append("email", getVal("requestEmail"));
-      params.append("phone", getVal("requestPhone"));
-      params.append("address", getVal("requestAddress"));
-      params.append("message", getVal("requestMessage"));
-
-      console.log("📦 Request form data:", params.toString());
-
-
-      fetch(`${BASE_URL}/api/request`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params,
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          alert(result.message || "Form submitted successfully!");
-          form.reset();
-          const confirmMsg = form.nextElementSibling;
-          if (confirmMsg && confirmMsg.classList.contains("success-msg")) {
-            confirmMsg.style.display = "block";
-            setTimeout(() => (confirmMsg.style.display = "none"), 4000);
-          }
-        })
-        .catch((err) => {
-          console.error("❌ Request form error:", err);
-          alert(
-            "Server error while submitting the form! Please try again later or contact us via WhatsApp."
-          );
-        });
+  // Auto-format phone numbers
+  document.querySelectorAll('input[type="tel"]').forEach(input => {
+    input.addEventListener('input', e => {
+      let val = e.target.value.replace(/\D/g,'').slice(0,10);
+      e.target.value = val;
+      val ? validateField(e.target) : removeError(e.target);
     });
-    console.log("✅ requestForm active");
-  }
+  });
+
+  // Add visual asterisk for required fields
+  document.querySelectorAll('[required]').forEach(field => {
+    if (!field.labels) return;
+    const label = field.labels[0];
+    if (label && !label.querySelector('.required-asterisk')) {
+      const asterisk = document.createElement('span');
+      asterisk.className = 'required-asterisk';
+      asterisk.textContent = ' *';
+      asterisk.style.color = '#ff4d6d';
+      label.appendChild(asterisk);
+    }
+  });
 });
